@@ -34,10 +34,12 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET', 'POST'])
-def hello_world():
+@app.route('/edit/<int:item_id>')
+def hello_world(item_id=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'
+    kwargs['debug'] = 'Editing item {}'.format(item_id)
 
     # Maybe add an item.
     if request.method == 'POST':
