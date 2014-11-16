@@ -1,10 +1,14 @@
 BASEDIR=$(PWD)
 VENV=$(BASEDIR)/ve
 VPYTHON=$(VENV)/bin/python
+VPIP=$(VENV)/bin/pip
 
 ########################################
 #  Development Tasks
 ########################################
+
+requirements:
+	$(VPIP) install -r $(BASEDIR)/requirements.txt
 
 checkin_all_the_things:
 	cd $(BASEDIR); git commit -a -m "CHECKIN ALL THE THINGS!!1!"
