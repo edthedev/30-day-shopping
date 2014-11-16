@@ -41,9 +41,13 @@ def index(item_id=None):
     kwargs['debug'] = 'Monkey!'
     kwargs['debug'] = 'Editing item {}'.format(item_id)
 
+    purchase = Purchase()
+    if item_id:
+        purchase = Purchase.get(Purchase.id==item_id)
+        kwargs['edit_item'] = purchase
+
     # Maybe add an item.
     if request.method == 'POST':
-        purchase = Purchase()
         form = PurchaseForm(request.form, obj=purchase)
         if form.validate():
             form.populate_obj(purchase)
