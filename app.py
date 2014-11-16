@@ -35,7 +35,7 @@ class Purchase(Model):
 # Web forms
 # ------------
 from wtfpeewee.orm import model_form
-PurchaseForm = model_form(Purchase)
+PurchaseForm = model_form(Purchase, exclude=('added', 'expected', 'bought'))
 PurchaseForm.csrf = True
 
 # Web app
@@ -82,4 +82,5 @@ if __name__ == '__main__':
     except OperationalError:
         print "Skipping table creation..."
     app.debug = True
-    app.run()
+    application = app
+    application.run()
