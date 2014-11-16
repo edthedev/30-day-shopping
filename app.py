@@ -17,9 +17,9 @@ class Purchase(Model):
     class Meta:
         database = db
 
-    #def __repr__(self):
-    #    return "{{ name }} {{ price }} {{ expected }}".format(**self.__dict__)
-
+    def __repr__(self):
+        _data = self.__dict__['_data']
+        return "{name} {price} {expected}".format(**_data)
 
 # Web forms
 # ------------
