@@ -25,6 +25,8 @@
 	<ul>
 		{% for purchase in purchases %}
 		{{ purchase }}
+		{% else %}
+		<li>No purchases added yet.</li>
 		{% endfor %}
 	</ul>
 </body>
