@@ -43,7 +43,7 @@ def hello_world():
 
     # Show add form and previously added items.
     kwargs['form'] = form
-    kwargs['purchases'] = Purchase.select()
+    kwargs['items'] = Purchase.select()
     return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
