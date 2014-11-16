@@ -25,16 +25,13 @@ class MyForm(Form):
 # Web app
 #----------
 
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
     form = MyForm()
-    results = """
-    Welcome to my web form:
-    """ +  str(form.content)
-    return results
+    return render_template('template.html', form=form)
 
 if __name__ == '__main__':
     app.debug = True
