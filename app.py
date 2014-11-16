@@ -15,6 +15,13 @@ class Purchase(Model):
     class Meta:
         database = db 
 
+# Web forms
+# ------------
+from wtforms import Form, validators, StringField
+class MyForm(Form):
+    first_name = StringField(u'First Name', validators=[validators.input_required()])
+    last_name  = StringField(u'Last Name', validators=[validators.optional()])
+
 # Web app
 #----------
 
@@ -23,7 +30,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    form = MyForm()
+    results = """
+    Welcome to my web form:
+    """ +  str(form.content)
+    return results
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()
