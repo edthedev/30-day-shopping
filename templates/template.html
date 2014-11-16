@@ -4,8 +4,9 @@
 	<title>30 Day Purchase App</title>
 </head>
 <body>
-	<form>
+	<form action="">
 	{% for field in form %}
+	{{ field.label }}
 	{{ field }}
 	{% endfor %}
 	</form>

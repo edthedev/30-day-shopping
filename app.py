@@ -17,10 +17,8 @@ class Purchase(Model):
 
 # Web forms
 # ------------
-from wtforms import Form, validators, StringField
-class MyForm(Form):
-    first_name = StringField(u'First Name', validators=[validators.input_required()])
-    last_name  = StringField(u'Last Name', validators=[validators.optional()])
+from wtfpeewee.orm import model_form
+PurchaseForm = model_form(Purchase)
 
 # Web app
 #----------
@@ -30,7 +28,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    form = MyForm()
+    form = PurchaseForm()
     return render_template('template.html', form=form)
 
 if __name__ == '__main__':
