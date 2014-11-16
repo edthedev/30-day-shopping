@@ -5,7 +5,11 @@
 </head>
 <body>
 	{{ debug }}
+	{% if edit_item %}
+	<h2> Modify purhcase {{ edit_item.id }}</h2>
+	{% else %}
 	<h2> Add a purchase </h2>
+	{% endif %}
 	{% if form.errors %}
 		<ul class="errors">
 			{% for field_name, field_errors in form.errors|dictsort if field_errors %}
@@ -20,12 +24,13 @@
 	{{ field.label }}
 	{{ field }}
 	{% endfor %}
-	<input type=submit value=Add />
+	<input type=submit value=Submit />
 	</form>
 	<h2> Planned Purchases </h2>
 	<ul>
+		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
 		{% for purchase in items %}
-		<li>{{ purchase }}</li>
+		<li><a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a></li>
 		{% else %}
 		<li>No purchases added yet.</li>
 		{% endfor %}

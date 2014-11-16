@@ -1,6 +1,6 @@
 # DATABASE
 #-----------
-from datetime import datetime
+from datetime import datetime, timedelta
 from peewee import Model, SqliteDatabase
 from peewee import CharField, DateField, BooleanField, DecimalField
 from peewee import OperationalError
@@ -19,7 +19,18 @@ class Purchase(Model):
 
     def __repr__(self):
         _data = self.__dict__['_data']
-        return "{name} {price} {expected}".format(**_data)
+        return "{expected} - {name} ${price}".format(**_data)
+
+    def save(self):
+        ''' Add default behavior for expected purchase date. '''
+        if not self.expected:
+            if self.price:
+                # Wait one day per dollar of cost.
+                self.expected = self.added + timedelta(days=int(self.price))
+            else:
+                # Or 30 days if price is unknown.
+                self.expected = self.added + timedelta(days=30)
+        super(Purchase, self).save()
 
 # Web forms
 # ------------
@@ -33,16 +44,26 @@ PurchaseForm.csrf = True
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-@app.route('/', methods = ['GET', 'POST'])
-def hello_world():
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
+def index(item_id=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'
 
+    purchase = Purchase()
+
+    # Maybe edit an item
+    if item_id:
+        kwargs['debug'] = 'Editing item {}'.format(item_id)
+        purchase = Purchase.get(Purchase.id==item_id)
+        kwargs['edit_item'] = purchase
+
+    # Make a form from our object.
+    form = PurchaseForm(request.form, obj=purchase)
+
     # Maybe add an item.
     if request.method == 'POST':
-        purchase = Purchase()
-        form = PurchaseForm(request.form, obj=purchase)
         if form.validate():
             form.populate_obj(purchase)
             purchase.save()
@@ -52,7 +73,7 @@ def hello_world():
 
     # Show add form and previously added items.
     kwargs['form'] = form
-    kwargs['items'] = Purchase.select()
+    kwargs['items'] = Purchase.select().order_by(Purchase.expected)
     return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
