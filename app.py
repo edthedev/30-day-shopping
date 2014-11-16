@@ -19,7 +19,7 @@ class Purchase(Model):
 
     def __repr__(self):
         _data = self.__dict__['_data']
-        return "{name} {price} {expected}".format(**_data)
+        return "{id} - {name} {price} {expected}".format(**_data)
 
 # Web forms
 # ------------
