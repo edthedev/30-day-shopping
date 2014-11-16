@@ -1,16 +1,19 @@
 # DATABASE
 #-----------
-from peewee import CharField, DateField, BooleanField, Model, SqliteDatabase
+from peewee import Model, SqliteDatabase
+from peewee import CharField, DateField, BooleanField, DecimalField
 
-db = SqliteDatabase('people.db')
+db = SqliteDatabase('shopping.db')
 
-class Person(Model):
+class Purchase(Model):
+    added = DateField()
     name = CharField()
-    birthday = DateField()
-    is_relative = BooleanField()
+    price = DecimalField()
+    expected = DateField()
+    bought = BooleanField()
 
     class Meta:
-        database = db # This model uses the "people.db" database.
+        database = db 
 
 # Web app
 #----------
