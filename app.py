@@ -28,10 +28,11 @@ PurchaseForm.csrf = True
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods = ['GET', 'POST'])
 def hello_world():
     kwargs = {}
     form = PurchaseForm()
+    kwargs['debug'] = 'Monkey!'
 
     # Maybe add an item.
     if request.method == 'POST':
@@ -40,6 +41,7 @@ def hello_world():
         if form.validate():
             form.populate_obj(purchase)
             purchase.save()
+            kwargs['debug'] = 'Invalid post'
 
     # Show add form and previously added items.
     kwargs['form'] = form

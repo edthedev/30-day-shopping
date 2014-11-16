@@ -4,6 +4,7 @@
 	<title>30 Day Purchase App</title>
 </head>
 <body>
+	{{ debug }}
 	<h2> Add a purchase </h2>
 	{% if form.errors %}
 		<ul class="errors">
@@ -14,7 +15,7 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
-	<form action="">
+	<form action="" method=POST>
 	{% for field in form %}
 	{{ field.label }}
 	{{ field }}
