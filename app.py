@@ -1,5 +1,6 @@
 # DATABASE
 #-----------
+from datetime import datetime
 from peewee import Model, SqliteDatabase
 from peewee import CharField, DateField, BooleanField, DecimalField
 from peewee import OperationalError
@@ -7,14 +8,18 @@ from peewee import OperationalError
 db = SqliteDatabase('shopping.db')
 
 class Purchase(Model):
-    added = DateField()
+    added = DateField(default=datetime.now)
     name = CharField()
-    price = DecimalField()
-    expected = DateField()
-    bought = BooleanField()
+    price = DecimalField(null=True)
+    expected = DateField(null=True)
+    bought = BooleanField(null=True)
 
     class Meta:
         database = db
+
+    #def __repr__(self):
+    #    return "{{ name }} {{ price }} {{ expected }}".format(**self.__dict__)
+
 
 # Web forms
 # ------------
