@@ -4,11 +4,19 @@
 	<title>30 Day Purchase App</title>
 </head>
 <body>
+	<h2> Add a purchase </h2>
 	<form action="">
 	{% for field in form %}
 	{{ field.label }}
 	{{ field }}
 	{% endfor %}
+	<input type=submit value=Add />
 	</form>
+	<h2> Planned Purchases </h2>
+	<ul>
+		{% for purchase in purchases %}
+		{{ purchase }}
+		{% endfor %}
+	</ul>
 </body>
 </html>
