@@ -6,6 +6,9 @@ VPYTHON=$(VENV)/bin/python
 #  Development Tasks
 ########################################
 
+checkin_all_the_things:
+	cd $(BASEDIR); git commit -a -m "CHECKIN ALL THE THINGS!!1!"
+
 #database: venv 
 #	$(VPYTHON) $(BASEDIR)/app.py syncdb
 
