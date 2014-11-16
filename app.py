@@ -41,7 +41,9 @@ def hello_world():
         if form.validate():
             form.populate_obj(purchase)
             purchase.save()
-            kwargs['debug'] = 'Invalid post'
+            kwargs['debug'] = 'Saved'
+        else:
+            kwargs['debug'] = 'Invalid POST'
 
     # Show add form and previously added items.
     kwargs['form'] = form
