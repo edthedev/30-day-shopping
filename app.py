@@ -33,22 +33,26 @@ PurchaseForm.csrf = True
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-@app.route('/', methods = ['GET', 'POST'])
-@app.route('/edit/<int:item_id>')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
 def index(item_id=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'
-    kwargs['debug'] = 'Editing item {}'.format(item_id)
 
     purchase = Purchase()
+
+    # Maybe edit an item
     if item_id:
+        kwargs['debug'] = 'Editing item {}'.format(item_id)
         purchase = Purchase.get(Purchase.id==item_id)
         kwargs['edit_item'] = purchase
 
+    # Make a form from our object.
+    form = PurchaseForm(request.form, obj=purchase)
+
     # Maybe add an item.
     if request.method == 'POST':
-        form = PurchaseForm(request.form, obj=purchase)
         if form.validate():
             form.populate_obj(purchase)
             purchase.save()
