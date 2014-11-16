@@ -19,7 +19,7 @@ class Purchase(Model):
 
     def __repr__(self):
         _data = self.__dict__['_data']
-        return "{id} - {name} {price} {expected}".format(**_data)
+        return "{expected} - {name} ${price}".format(**_data)
 
     def save(self):
         ''' Add default behavior for expected purchase date. '''
