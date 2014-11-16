@@ -10,4 +10,7 @@ VPYTHON=$(VENV)/bin/python
 #	$(VPYTHON) $(BASEDIR)/app.py syncdb
 
 runserver:
-	$(VPYTHON) $(BASEDIR)/app.py
+	$(VPYTHON) $(BASEDIR)/app.py &
+
+open: runserver
+	open http://127.0.0.1:5000/
