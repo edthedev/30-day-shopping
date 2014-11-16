@@ -35,7 +35,7 @@ app = Flask(__name__)
 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/edit/<int:item_id>')
-def hello_world(item_id=None):
+def index(item_id=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'

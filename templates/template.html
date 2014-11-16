@@ -25,7 +25,7 @@
 	<h2> Planned Purchases </h2>
 	<ul>
 		{% for purchase in items %}
-		<li><a href='edit/{{ purchase.id }}'>{{ purchase }}</a></li>
+		<li><a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a></li>
 		{% else %}
 		<li>No purchases added yet.</li>
 		{% endfor %}
