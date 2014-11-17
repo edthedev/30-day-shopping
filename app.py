@@ -77,11 +77,14 @@ def index(item_id=None):
     kwargs['items'] = Purchase.select().order_by(Purchase.expected)
     return render_template('template.html', **kwargs)
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 if __name__ == '__main__':
     try:
         db.create_tables([Purchase])
     except OperationalError:
-        print "Skipping table creation..."
+        _LOGGER.info('Skipping table creation...')
     app.debug = True
     application = app
     application.run()
