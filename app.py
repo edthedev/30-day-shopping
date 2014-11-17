@@ -1,6 +1,8 @@
 import os
 
 PROJECT_ROOT = os.path.dirname(__file__)
+_LOG_FILE = os.path.join(PROJECT_ROOT, 'shopping.log')
+_DATABASE_FILE = os.path.join(PROJECT_ROOT, 'shopping.db')
 # sys.path.insert(0, PROJECT_ROOT)
 
 # DATABASE
@@ -10,7 +12,7 @@ from peewee import Model, SqliteDatabase
 from peewee import CharField, DateField, BooleanField, DecimalField
 from peewee import OperationalError
 
-db = SqliteDatabase('shopping.db')
+db = SqliteDatabase(_DATABASE_FILE)
 
 class Purchase(Model):
     added = DateField(default=datetime.now)
@@ -82,7 +84,6 @@ def index(item_id=None):
     return render_template('template.html', **kwargs)
 
 import logging
-_LOG_FILE = os.path.join(PROJECT_ROOT, 'shopping.log')
 logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
 _LOGGER = logging.getLogger(__name__)
 
