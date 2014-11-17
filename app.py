@@ -1,3 +1,10 @@
+#PYTHONPATH
+#------------
+import os
+import sys
+PROJECT_ROOT = os.path.dirname(__file__)
+sys.path.insert(0, PROJECT_ROOT)
+
 # DATABASE
 #-----------
 from datetime import datetime, timedelta
