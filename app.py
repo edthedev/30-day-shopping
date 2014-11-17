@@ -90,6 +90,7 @@ _LOGGER = logging.getLogger(__name__)
 if __name__ == '__main__':
     try:
         db.create_tables([Purchase])
+        _LOGGER.info('Created tables...')
     except OperationalError:
         _LOGGER.info('Skipping table creation...')
     app.debug = True
