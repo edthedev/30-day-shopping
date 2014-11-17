@@ -78,6 +78,7 @@ def index(item_id=None):
     return render_template('template.html', **kwargs)
 
 import logging
+logging.basicConfig(filename='shopping.log', level=logging.DEBUG)
 _LOGGER = logging.getLogger(__name__)
 
 if __name__ == '__main__':
