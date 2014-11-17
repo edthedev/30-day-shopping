@@ -80,8 +80,7 @@
 	{% endif %}
 	<form action="" method=POST>
 	{% for field in form %}
-	{{ field.label }}
-	{{ field }}
+	<p>{{ field.label }} {{ field }}</p>
 	{% endfor %}
 	<input type=submit value=Submit />
 	</form>
