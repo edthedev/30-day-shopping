@@ -5,6 +5,10 @@ _LOG_FILE = os.path.join(PROJECT_ROOT, 'shopping.log')
 _DATABASE_FILE = os.path.join(PROJECT_ROOT, 'shopping.db')
 # sys.path.insert(0, PROJECT_ROOT)
 
+import logging
+logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
+_LOGGER = logging.getLogger(__name__)
+
 # DATABASE
 #-----------
 from datetime import datetime, timedelta
@@ -13,6 +17,12 @@ from peewee import CharField, DateField, BooleanField, DecimalField
 from peewee import OperationalError
 
 db = SqliteDatabase(_DATABASE_FILE)
+
+try:
+    db.create_tables([Purchase])
+    _LOGGER.info('Created tables...')
+except OperationalError:
+    _LOGGER.info('Skipping table creation...')
 
 class Purchase(Model):
     added = DateField(default=datetime.now)
@@ -83,16 +93,8 @@ def index(item_id=None):
     kwargs['items'] = Purchase.select().order_by(Purchase.expected)
     return render_template('template.html', **kwargs)
 
-import logging
-logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
-_LOGGER = logging.getLogger(__name__)
 
 if __name__ == '__main__':
-    try:
-        db.create_tables([Purchase])
-        _LOGGER.info('Created tables...')
-    except OperationalError:
-        _LOGGER.info('Skipping table creation...')
     app.debug = True
     application = app
     application.run()
