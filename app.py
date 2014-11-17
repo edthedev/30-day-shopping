@@ -1,3 +1,4 @@
+
 # DATABASE
 #-----------
 from datetime import datetime, timedelta
@@ -76,11 +77,15 @@ def index(item_id=None):
     kwargs['items'] = Purchase.select().order_by(Purchase.expected)
     return render_template('template.html', **kwargs)
 
+import logging
+logging.basicConfig(filename='shopping.log', level=logging.DEBUG)
+_LOGGER = logging.getLogger(__name__)
+
 if __name__ == '__main__':
     try:
         db.create_tables([Purchase])
     except OperationalError:
-        print "Skipping table creation..."
+        _LOGGER.info('Skipping table creation...')
     app.debug = True
     application = app
     application.run()
