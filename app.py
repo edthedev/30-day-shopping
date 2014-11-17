@@ -86,6 +86,9 @@ def index(item_id=None):
         if form.validate():
             form.populate_obj(purchase)
             purchase.save()
+            # Now display a blank form.
+            form = PurchaseForm()
+
             kwargs['debug'] = 'Saved'
         else:
             kwargs['debug'] = 'Invalid POST'
