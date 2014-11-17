@@ -18,11 +18,6 @@ from peewee import OperationalError
 
 db = SqliteDatabase(_DATABASE_FILE)
 
-try:
-    db.create_tables([Purchase])
-    _LOGGER.info('Created tables...')
-except OperationalError:
-    _LOGGER.info('Skipping table creation...')
 
 class Purchase(Model):
     added = DateField(default=datetime.now)
@@ -48,6 +43,13 @@ class Purchase(Model):
                 # Or 30 days if price is unknown.
                 self.expected = self.added + timedelta(days=30)
         super(Purchase, self).save()
+
+# Add the schema if it doesn't already exist.
+try:
+    db.create_tables([Purchase])
+    _LOGGER.info('Created tables...')
+except OperationalError:
+    _LOGGER.info('Skipping table creation...')
 
 # Web forms
 # ------------
