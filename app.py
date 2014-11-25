@@ -54,8 +54,8 @@ except OperationalError:
 # Web forms
 # ------------
 from wtfpeewee.orm import model_form
-PurchaseForm = model_form(Purchase, 
-        exclude=('added', 'expected', 'bought', 'resovled'))
+PurchaseForm = model_form(Purchase,
+        exclude=('added', 'expected', 'bought', 'resolved'))
 PurchaseForm.csrf = True
 
 # Web app
@@ -110,6 +110,8 @@ def index(item_id=None, mode=None):
             form = PurchaseForm()
 
             kwargs['debug'] = 'Saved'
+            # Don't leave us on POST...nicer to refresh button...
+            return redirect(url_for('index'))
         else:
             kwargs['debug'] = 'Invalid POST'
 
@@ -118,7 +120,7 @@ def index(item_id=None, mode=None):
     kwargs['items'] = \
             Purchase.select().where(
                     Purchase.resolved==None).order_by(Purchase.expected)
-    kwargs['did_not_buy'] = \
+    kwargs['will_nmt_buy'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,
                     Purchase.bought==False).order_by(Purchase.expected)
