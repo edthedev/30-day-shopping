@@ -88,9 +88,18 @@
 	<ul>
 		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
 		{% for purchase in items %}
-		<li><a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a></li>
+		<li>
+			{% if mode == 'bought' %}
+			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
+				<input type=submit value="Won't"/></form>
+			{% elif mode == 'wont' %}
+			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
+				<input type=submit value="Won't"/></form>
+			{% endif %}
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
 		{% else %}
-		<li>No purchases added yet.</li>
+		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
 </body>
