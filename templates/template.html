@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-	<title>Weekend Plans</title>
+	<title>30 Day Shopping</title>
 
 	<!-- Don't suck at default zoom level. -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -22,11 +22,50 @@
 
 	<script src=
 		"{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+
+	<!-- Base app css -->
+	<link href=
+	"{{ url_for('static', filename='base.css') }}"
+		rel="stylesheet">
+
 </meta>
 	<title>30 Day Purchase App</title>
 </head>
 <body>
+<!-- Start of Navigation -->
+{% block nav %}
+<nav class="navbar navbar-default" role="navigation">
+<div>
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="">Shopping</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="http://weekend.delaporte.us">Weekend Plans</a></li>
+        <li><a href="http://weekend.delaporte.us/completed">Completed plans</a></li>
+        <li><a href="http://shopping.delaporte.us">Shopping</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+{% endblock %}
+<!-- End of Navigation -->
 	{{ debug }}
+	<ul>
+		<li><a href={{ url_for('index') }}>Home</a></li>
+		<li><a href={{ url_for('index', mode='wont') }}>Won't buy something.</a></li>
+		<li><a href={{ url_for('index', mode='bought') }}>Bought something.</a></li>
+	</ul>
 	{% if edit_item %}
 	<h2> Modify purhcase {{ edit_item.id }}</h2>
 	{% else %}
@@ -41,21 +80,53 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
-	<form action="" method=POST>
+	<form action="{{ url_for('index') }}" method=POST>
 	{% for field in form %}
-	{{ field.label }}
-	{{ field }}
+	<p>{{ field.label }} {{ field }}</p>
 	{% endfor %}
 	<input type=submit value=Submit />
 	</form>
-	<h2> Planned Purchases </h2>
+	<h2>Planned Purchases </h2>
 	<ul>
 		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
 		{% for purchase in items %}
-		<li><a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a></li>
+		<li>
+			{% if mode == 'bought' %}
+			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
+				<input type=submit value="Bought {{ purchase }}"/></form>
+			{% elif mode == 'wont' %}
+			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
+				<input type=submit value="Won't buy {{ purchase }}"/></form>
+			{% else %}
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+			{% endif %}
+		</li>
 		{% else %}
-		<li>No purchases added yet.</li>
+		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
+
+	<h2>Recently Bought</h2>
+	<ul>
+		{% for purchase in recently_bought %}
+		<li>
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
+		{% else %}
+		<li>Nothing bought recently.</li>
+		{% endfor %}
+	</ul>
+
+	<h2>Will Not Buy</h2>
+	<ul>
+		{% for purchase in will_not_buy %}
+		<li>
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
+		{% else %}
+		<li>No purchases skipped yet.</li>
+		{% endfor %}
+	</ul>
+
 </body>
 </html>

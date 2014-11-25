@@ -1,0 +1,15 @@
+/* Stop being stupid, Firefox. */
+* {
+   -moz-box-sizing: content-box;
+}
+/* Body color is an easy way to be sure the CSS connected. */
+body {
+	background-color: #99CCFF;
+} 
+
+/* Let's stop hating people with big fingers. */
+button, input[type="button"], input[type="submit"] {
+	min-width: 72 px;
+	min-height: 72 px;
+	display: block;
+}

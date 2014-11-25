@@ -1,3 +1,14 @@
+import os
+
+PROJECT_ROOT = os.path.dirname(__file__)
+_LOG_FILE = os.path.join(PROJECT_ROOT, 'shopping.log')
+_DATABASE_FILE = os.path.join(PROJECT_ROOT, 'shopping.db')
+# sys.path.insert(0, PROJECT_ROOT)
+
+import logging
+logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
+_LOGGER = logging.getLogger(__name__)
+
 # DATABASE
 #-----------
 from datetime import datetime, timedelta
@@ -5,7 +16,7 @@ from peewee import Model, SqliteDatabase
 from peewee import CharField, DateField, BooleanField, DecimalField
 from peewee import OperationalError
 
-db = SqliteDatabase('shopping.db')
+db = SqliteDatabase(_DATABASE_FILE)
 
 class Purchase(Model):
     added = DateField(default=datetime.now)
@@ -13,6 +24,7 @@ class Purchase(Model):
     price = DecimalField(null=True)
     expected = DateField(null=True)
     bought = BooleanField(null=True)
+    resolved = DateField(null=True)
 
     class Meta:
         database = db
@@ -32,24 +44,51 @@ class Purchase(Model):
                 self.expected = self.added + timedelta(days=30)
         super(Purchase, self).save()
 
+# Add the schema if it doesn't already exist.
+try:
+    db.create_tables([Purchase])
+    _LOGGER.info('Created tables...')
+except OperationalError:
+    _LOGGER.info('Skipping table creation...')
+
 # Web forms
 # ------------
 from wtfpeewee.orm import model_form
-PurchaseForm = model_form(Purchase, exclude=('added', 'expected', 'bought'))
+PurchaseForm = model_form(Purchase,
+        exclude=('added', 'expected', 'bought', 'resolved'))
 PurchaseForm.csrf = True
 
 # Web app
 #----------
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
+
+
+@app.route('/wont/<int:item_id>', methods=['POST'])
+def wont(item_id):
+    purchase = Purchase.get(Purchase.id==item_id)
+    purchase.resolved = datetime.now()
+    purchase.bought = False
+    purchase.save()
+    return redirect(url_for('index'))
+
+@app.route('/bought/<int:item_id>', methods=['POST'])
+def bought(item_id):
+    purchase = Purchase.get(Purchase.id==item_id)
+    purchase.resolved = datetime.now()
+    purchase.bought = True
+    purchase.save()
+    return redirect(url_for('index'))
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
-def index(item_id=None):
+@app.route('/mode/<string:mode>', methods=['GET'])
+def index(item_id=None, mode=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'
+    kwargs['mode'] = mode
 
     purchase = Purchase()
 
@@ -67,20 +106,33 @@ def index(item_id=None):
         if form.validate():
             form.populate_obj(purchase)
             purchase.save()
+            # Now display a blank form.
+            form = PurchaseForm()
+
             kwargs['debug'] = 'Saved'
+            # Don't leave us on POST...nicer to refresh button...
+            return redirect(url_for('index'))
         else:
             kwargs['debug'] = 'Invalid POST'
 
     # Show add form and previously added items.
     kwargs['form'] = form
-    kwargs['items'] = Purchase.select().order_by(Purchase.expected)
+    kwargs['items'] = \
+            Purchase.select().where(
+                    Purchase.resolved==None).order_by(Purchase.expected)
+    kwargs['will_nmt_buy'] = \
+            Purchase.select().where(
+                    Purchase.resolved!=None,
+                    Purchase.bought==False).order_by(Purchase.expected)
+
+    kwargs['recently_bought'] = \
+            Purchase.select().where(
+                    Purchase.resolved!=None,
+                    Purchase.bought==True).order_by(Purchase.expected)
+
     return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
-    try:
-        db.create_tables([Purchase])
-    except OperationalError:
-        print "Skipping table creation..."
     app.debug = True
     application = app
     application.run()
