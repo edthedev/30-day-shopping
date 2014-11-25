@@ -60,10 +60,12 @@
 </nav>
 {% endblock %}
 <!-- End of Navigation -->
-
-
-
 	{{ debug }}
+	<ul>
+		<li><a href={{ url_for('index') }}>Home</a></li>
+		<li><a href={{ url_for('index', mode='wont') }}>Won't buy something.</a></li>
+		<li><a href={{ url_for('index', mode='bought') }}>Bought something.</a></li>
+	</ul>
 	{% if edit_item %}
 	<h2> Modify purhcase {{ edit_item.id }}</h2>
 	{% else %}
@@ -90,8 +92,8 @@
 		{% for purchase in items %}
 		<li>
 			{% if mode == 'bought' %}
-			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
-				<input type=submit value="Won't"/></form>
+			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
+				<input type=submit value="Bought"/></form>
 			{% elif mode == 'wont' %}
 			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
 				<input type=submit value="Won't"/></form>

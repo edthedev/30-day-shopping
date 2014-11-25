@@ -69,6 +69,15 @@ app = Flask(__name__)
 def wont(item_id):
     purchase = Purchase.get(Purchase.id==item_id)
     purchase.resolved = datetime.now()
+    purchase.bought = False
+    purchase.save()
+    return redirect(url_for('index'))
+
+@app.route('/bought/<int:item_id>', methods=['POST'])
+def bought(item_id):
+    purchase = Purchase.get(Purchase.id==item_id)
+    purchase.resolved = datetime.now()
+    purchase.bought = True
     purchase.save()
     return redirect(url_for('index'))
 
