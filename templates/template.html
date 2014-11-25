@@ -80,7 +80,7 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
-	<form action="" method=POST>
+	<form action="{{ url_for('index') }}" method=POST>
 	{% for field in form %}
 	<p>{{ field.label }} {{ field }}</p>
 	{% endfor %}
@@ -93,12 +93,13 @@
 		<li>
 			{% if mode == 'bought' %}
 			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
-				<input type=submit value="Bought"/></form>
+				<input type=submit value="Bought {{ purchase }}"/></form>
 			{% elif mode == 'wont' %}
 			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
-				<input type=submit value="Won't"/></form>
-			{% endif %}
+				<input type=submit value="Won't buy {{ purchase }}"/></form>
+			{% else %}
 			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+			{% endif %}
 		</li>
 		{% else %}
 		<li>No purchases planned at the moment.</li>
