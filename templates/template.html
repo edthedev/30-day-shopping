@@ -102,6 +102,18 @@
 		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
+
+	<h2>Recently Bought</h2>
+	<ul>
+		{% for purchase in recently_bought %}
+		<li>
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
+		{% else %}
+		<li>Nothing bought recently.</li>
+		{% endfor %}
+	</ul>
+
 	<h2>Will Not Buy</h2>
 	<ul>
 		{% for purchase in will_not_buy %}

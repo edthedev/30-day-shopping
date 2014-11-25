@@ -74,11 +74,12 @@ def wont(item_id):
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
-def index(item_id=None):
+@app.route('/mode/<string:mode>', methods=['GET'])
+def index(item_id=None, mode=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'
-    kwargs['mode'] = 'wont'
+    kwargs['mode'] = mode
 
     purchase = Purchase()
 
@@ -113,8 +114,12 @@ def index(item_id=None):
                     Purchase.resolved!=None,
                     Purchase.bought==False).order_by(Purchase.expected)
 
-    return render_template('template.html', **kwargs)
+    kwargs['recently_bought'] = \
+            Purchase.select().where(
+                    Purchase.resolved!=None,
+                    Purchase.bought==True).order_by(Purchase.expected)
 
+    return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
     app.debug = True
