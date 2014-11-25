@@ -18,13 +18,13 @@ from peewee import OperationalError
 
 db = SqliteDatabase(_DATABASE_FILE)
 
-
 class Purchase(Model):
     added = DateField(default=datetime.now)
     name = CharField()
     price = DecimalField(null=True)
     expected = DateField(null=True)
     bought = BooleanField(null=True)
+    resolved = DateField(null=True)
 
     class Meta:
         database = db
@@ -54,21 +54,41 @@ except OperationalError:
 # Web forms
 # ------------
 from wtfpeewee.orm import model_form
-PurchaseForm = model_form(Purchase, exclude=('added', 'expected', 'bought'))
+PurchaseForm = model_form(Purchase,
+        exclude=('added', 'expected', 'bought', 'resolved'))
 PurchaseForm.csrf = True
 
 # Web app
 #----------
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
+
+
+@app.route('/wont/<int:item_id>', methods=['POST'])
+def wont(item_id):
+    purchase = Purchase.get(Purchase.id==item_id)
+    purchase.resolved = datetime.now()
+    purchase.bought = False
+    purchase.save()
+    return redirect(url_for('index'))
+
+@app.route('/bought/<int:item_id>', methods=['POST'])
+def bought(item_id):
+    purchase = Purchase.get(Purchase.id==item_id)
+    purchase.resolved = datetime.now()
+    purchase.bought = True
+    purchase.save()
+    return redirect(url_for('index'))
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
-def index(item_id=None):
+@app.route('/mode/<string:mode>', methods=['GET'])
+def index(item_id=None, mode=None):
     kwargs = {}
     form = PurchaseForm()
     kwargs['debug'] = 'Monkey!'
+    kwargs['mode'] = mode
 
     purchase = Purchase()
 
@@ -90,14 +110,27 @@ def index(item_id=None):
             form = PurchaseForm()
 
             kwargs['debug'] = 'Saved'
+            # Don't leave us on POST...nicer to refresh button...
+            return redirect(url_for('index'))
         else:
             kwargs['debug'] = 'Invalid POST'
 
     # Show add form and previously added items.
     kwargs['form'] = form
-    kwargs['items'] = Purchase.select().order_by(Purchase.expected)
-    return render_template('template.html', **kwargs)
+    kwargs['items'] = \
+            Purchase.select().where(
+                    Purchase.resolved==None).order_by(Purchase.expected)
+    kwargs['will_nmt_buy'] = \
+            Purchase.select().where(
+                    Purchase.resolved!=None,
+                    Purchase.bought==False).order_by(Purchase.expected)
 
+    kwargs['recently_bought'] = \
+            Purchase.select().where(
+                    Purchase.resolved!=None,
+                    Purchase.bought==True).order_by(Purchase.expected)
+
+    return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
     app.debug = True

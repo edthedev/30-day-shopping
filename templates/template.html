@@ -60,10 +60,12 @@
 </nav>
 {% endblock %}
 <!-- End of Navigation -->
-
-
-
 	{{ debug }}
+	<ul>
+		<li><a href={{ url_for('index') }}>Home</a></li>
+		<li><a href={{ url_for('index', mode='wont') }}>Won't buy something.</a></li>
+		<li><a href={{ url_for('index', mode='bought') }}>Bought something.</a></li>
+	</ul>
 	{% if edit_item %}
 	<h2> Modify purhcase {{ edit_item.id }}</h2>
 	{% else %}
@@ -78,20 +80,53 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
-	<form action="" method=POST>
+	<form action="{{ url_for('index') }}" method=POST>
 	{% for field in form %}
 	<p>{{ field.label }} {{ field }}</p>
 	{% endfor %}
 	<input type=submit value=Submit />
 	</form>
-	<h2> Planned Purchases </h2>
+	<h2>Planned Purchases </h2>
 	<ul>
 		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
 		{% for purchase in items %}
-		<li><a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a></li>
+		<li>
+			{% if mode == 'bought' %}
+			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
+				<input type=submit value="Bought {{ purchase }}"/></form>
+			{% elif mode == 'wont' %}
+			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
+				<input type=submit value="Won't buy {{ purchase }}"/></form>
+			{% else %}
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+			{% endif %}
+		</li>
 		{% else %}
-		<li>No purchases added yet.</li>
+		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
+
+	<h2>Recently Bought</h2>
+	<ul>
+		{% for purchase in recently_bought %}
+		<li>
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
+		{% else %}
+		<li>Nothing bought recently.</li>
+		{% endfor %}
+	</ul>
+
+	<h2>Will Not Buy</h2>
+	<ul>
+		{% for purchase in will_not_buy %}
+		<li>
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
+		{% else %}
+		<li>No purchases skipped yet.</li>
+		{% endfor %}
+	</ul>
+
 </body>
 </html>
