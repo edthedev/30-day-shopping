@@ -84,7 +84,7 @@
 	{% endfor %}
 	<input type=submit value=Submit />
 	</form>
-	<h2> Planned Purchases </h2>
+	<h2>Planned Purchases </h2>
 	<ul>
 		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
 		{% for purchase in items %}
@@ -102,5 +102,16 @@
 		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
+	<h2>Will Not Buy</h2>
+	<ul>
+		{% for purchase in will_not_buy %}
+		<li>
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		</li>
+		{% else %}
+		<li>No purchases skipped yet.</li>
+		{% endfor %}
+	</ul>
+
 </body>
 </html>

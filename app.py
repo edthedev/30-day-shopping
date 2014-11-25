@@ -113,7 +113,6 @@ def index(item_id=None):
                     Purchase.resolved!=None,
                     Purchase.bought==False).order_by(Purchase.expected)
 
-
     return render_template('template.html', **kwargs)
 
 
