@@ -105,7 +105,14 @@
 		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
-
+	<h2>Expected Monthly Costs</h2>
+	<ul>
+	{% for month in sums %}
+	<li>
+		{{ month }}:{{ sums['month'] }}
+	</li>
+	{% endfor %}
+	</ul>
 	<h2>Recently Bought</h2>
 	<ul>
 		{% for purchase in recently_bought %}
