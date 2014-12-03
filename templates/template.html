@@ -107,10 +107,12 @@
 	</ul>
 	<h2>Expected Monthly Costs</h2>
 	<ul>
-	{% for month in sums %}
+	{% for month, cost in sums.iteritems() %}
 	<li>
-		{{ month }}:{{ sums['month'] }}
+		{{ month }} - ${{ cost }}
 	</li>
+	{% else %}
+		No sums...
 	{% endfor %}
 	</ul>
 	<h2>Recently Bought</h2>

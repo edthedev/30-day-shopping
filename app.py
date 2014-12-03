@@ -125,7 +125,8 @@ def index(item_id=None, mode=None):
     from collections import defaultdict
     sums = defaultdict(lambda:0, sums)
     for item in items:
-        sums[item.expected.month] += item.price
+        month_name = item.expected.strftime('%B')
+        sums[month_name] += item.price
     kwargs['sums'] = sums
     kwargs['will_nmt_buy'] = \
             Purchase.select().where(
