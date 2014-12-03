@@ -13,7 +13,8 @@ _LOGGER = logging.getLogger(__name__)
 #-----------
 from datetime import datetime, timedelta
 from peewee import Model, SqliteDatabase
-from peewee import CharField, DateField, BooleanField, DecimalField
+from peewee import CharField, DateField, BooleanField, DecimalField, \
+        IntegerField
 from peewee import OperationalError
 
 db = SqliteDatabase(_DATABASE_FILE)
@@ -25,6 +26,8 @@ class Purchase(Model):
     expected = DateField(null=True)
     bought = BooleanField(null=True)
     resolved = DateField(null=True)
+    xp = IntegerField(null=True, default=0)
+    target_xp = IntegerField(null=True)
 
     class Meta:
         database = db
@@ -35,6 +38,11 @@ class Purchase(Model):
 
     def save(self):
         ''' Add default behavior for expected purchase date. '''
+        # Default for target_xp
+        if not self.target_xp:
+            self.target_xp = int(self.price)
+
+        # Default for expected purchase date
         if not self.expected:
             if self.price:
                 # Wait one day per dollar of cost.
