@@ -117,9 +117,17 @@ def index(item_id=None, mode=None):
 
     # Show add form and previously added items.
     kwargs['form'] = form
-    kwargs['items'] = \
-            Purchase.select().where(
+    items = Purchase.select().where(
                     Purchase.resolved==None).order_by(Purchase.expected)
+    kwargs['items'] = items
+
+    sums = {}
+    from collections import defaultdict
+    sums = defaultdict(lambda:0, sums)
+    for item in items:
+        month_name = item.expected.strftime('%B')
+        sums[month_name] += item.price
+    kwargs['sums'] = sums
     kwargs['will_nmt_buy'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,

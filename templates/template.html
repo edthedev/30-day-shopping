@@ -67,7 +67,7 @@
 		<li><a href={{ url_for('index', mode='bought') }}>Bought something.</a></li>
 	</ul>
 	{% if edit_item %}
-	<h2> Modify purhcase {{ edit_item.id }}</h2>
+	<h2> Modify purchase {{ edit_item.id }}</h2>
 	{% else %}
 	<h2> Add a purchase </h2>
 	{% endif %}
@@ -105,7 +105,16 @@
 		<li>No purchases planned at the moment.</li>
 		{% endfor %}
 	</ul>
-
+	<h2>Expected Monthly Costs</h2>
+	<ul>
+	{% for month, cost in sums.iteritems() %}
+	<li>
+		{{ month }} - ${{ cost }}
+	</li>
+	{% else %}
+		No sums...
+	{% endfor %}
+	</ul>
 	<h2>Recently Bought</h2>
 	<ul>
 		{% for purchase in recently_bought %}
