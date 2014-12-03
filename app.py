@@ -126,7 +126,7 @@ def index(item_id=None, mode=None):
     sums = defaultdict(lambda:0, sums)
     for item in items:
         sums[item.expected.month] += item.price
-
+    kwargs['sums'] = sums
     kwargs['will_nmt_buy'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,
