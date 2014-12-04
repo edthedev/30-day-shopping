@@ -107,7 +107,7 @@ def index(item_id=None, mode=None):
             form.populate_obj(purchase)
             purchase.save()
             # Now display a blank form.
-            form = PurchaseForm()
+            # form = PurchaseForm()
 
             kwargs['debug'] = 'Saved'
             # Don't leave us on POST...nicer to refresh button...

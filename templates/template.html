@@ -80,7 +80,11 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
+	{% if edit_item %}
+	<form action="{{ url_for('index', item_id=edit_item.id) }}" method=POST>
+	{% else %}
 	<form action="{{ url_for('index') }}" method=POST>
+	{% endif %}
 	{% for field in form %}
 	<p>{{ field.label }} {{ field }}</p>
 	{% endfor %}
