@@ -56,6 +56,9 @@ except OperationalError:
 from wtfpeewee.orm import model_form
 PurchaseForm = model_form(Purchase,
         exclude=('added', 'expected', 'bought', 'resolved'))
+FullPurchaseForm = model_form(Purchase,
+        exclude=('added'))
+
 PurchaseForm.csrf = True
 
 # Web app
@@ -92,14 +95,16 @@ def index(item_id=None, mode=None):
 
     purchase = Purchase()
 
+    # Add form 
+    form = PurchaseForm(request.form, obj=purchase)
+
     # Maybe edit an item
     if item_id:
         kwargs['debug'] = 'Editing item {}'.format(item_id)
         purchase = Purchase.get(Purchase.id==item_id)
         kwargs['edit_item'] = purchase
-
-    # Make a form from our object.
-    form = PurchaseForm(request.form, obj=purchase)
+        # Edit form...
+        form = FullPurchaseForm(request.form, obj=purchase)
 
     # Maybe add an item.
     if request.method == 'POST':
