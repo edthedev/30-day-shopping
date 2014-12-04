@@ -56,6 +56,9 @@ except OperationalError:
 from wtfpeewee.orm import model_form
 PurchaseForm = model_form(Purchase,
         exclude=('added', 'expected', 'bought', 'resolved'))
+FullPurchaseForm = model_form(Purchase,
+        exclude=('added'))
+
 PurchaseForm.csrf = True
 
 # Web app
@@ -92,14 +95,16 @@ def index(item_id=None, mode=None):
 
     purchase = Purchase()
 
+    # Add form 
+    form = PurchaseForm(request.form, obj=purchase)
+
     # Maybe edit an item
     if item_id:
         kwargs['debug'] = 'Editing item {}'.format(item_id)
         purchase = Purchase.get(Purchase.id==item_id)
         kwargs['edit_item'] = purchase
-
-    # Make a form from our object.
-    form = PurchaseForm(request.form, obj=purchase)
+        # Edit form...
+        form = FullPurchaseForm(request.form, obj=purchase)
 
     # Maybe add an item.
     if request.method == 'POST':
@@ -121,22 +126,31 @@ def index(item_id=None, mode=None):
                     Purchase.resolved==None).order_by(Purchase.expected)
     kwargs['items'] = items
 
+    # Sum purchases by month...
     sums = {}
     from collections import defaultdict
     sums = defaultdict(lambda:0, sums)
     for item in items:
         month_name = item.expected.strftime('%B')
         sums[month_name] += item.price
-    kwargs['sums'] = sums
-    kwargs['will_nmt_buy'] = \
+
+    # will not buy 
+    kwargs['will_not_buy'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,
                     Purchase.bought==False).order_by(Purchase.expected)
-
-    kwargs['recently_bought'] = \
+    # bought...
+    bought_items = \
             Purchase.select().where(
                     Purchase.resolved!=None,
                     Purchase.bought==True).order_by(Purchase.expected)
+    kwargs['recently_bought'] = bought_items
+
+    # Include bought items in sums...
+    for item in bought_items:
+        month_name = item.expected.strftime('%B')
+        sums[month_name] += item.price
+    kwargs['sums'] = sums
 
     return render_template('template.html', **kwargs)
 
