@@ -121,6 +121,7 @@ def index(item_id=None, mode=None):
                     Purchase.resolved==None).order_by(Purchase.expected)
     kwargs['items'] = items
 
+    # Sum purchases by month...
     sums = {}
     from collections import defaultdict
     sums = defaultdict(lambda:0, sums)
@@ -128,11 +129,13 @@ def index(item_id=None, mode=None):
         month_name = item.expected.strftime('%B')
         sums[month_name] += item.price
     kwargs['sums'] = sums
-    kwargs['will_nmt_buy'] = \
+
+    # will not buy 
+    kwargs['will_not_buy'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,
                     Purchase.bought==False).order_by(Purchase.expected)
-
+    # bought...
     kwargs['recently_bought'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,
