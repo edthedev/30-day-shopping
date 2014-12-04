@@ -28,6 +28,21 @@
 	"{{ url_for('static', filename='base.css') }}"
 		rel="stylesheet">
 
+	<!-- JQuery UI for Date Picker -->
+	<link href=
+	"{{ url_for('static', filename='jquery-ui-1.11.1/jquery-ui.css') }}" rel="stylesheet">
+
+	<script src=
+		"{{ url_for('static', filename='jquery-ui-1.11.1/jquery-ui.js') }}"></script>
+
+	<script>
+		// Bind a Date Picker to any control named id_completed
+		 $(function() {
+			 $( "#expected" ).datepicker();
+			 $( "#resolved" ).datepicker();
+		 });
+	</script>
+
 </meta>
 	<title>30 Day Purchase App</title>
 </head>
@@ -86,7 +101,7 @@
 	<form action="{{ url_for('index') }}" method=POST>
 	{% endif %}
 	{% for field in form %}
-	<p>{{ field.label }} {{ field }}</p>
+	<p>{{ field.label }} {{ field(foo='bar') }}</p>
 	{% endfor %}
 	<input type=submit value=Submit />
 	</form>
