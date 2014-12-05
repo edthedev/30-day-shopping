@@ -21,7 +21,7 @@ db = SqliteDatabase(_DATABASE_FILE)
 class Purchase(Model):
     added = DateField(default=datetime.now)
     name = CharField()
-    price = DecimalField(null=True, default=lambda x: 0)
+    price = DecimalField(null=True, default=lambda: 0)
     expected = DateField(null=True)
     bought = BooleanField(null=True)
     resolved = DateField(null=True)
