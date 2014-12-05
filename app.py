@@ -21,7 +21,7 @@ db = SqliteDatabase(_DATABASE_FILE)
 class Purchase(Model):
     added = DateField(default=datetime.now)
     name = CharField()
-    price = DecimalField(null=True)
+    price = DecimalField(null=True, default=lambda x: 0)
     expected = DateField(null=True)
     bought = BooleanField(null=True)
     resolved = DateField(null=True)
@@ -132,7 +132,8 @@ def index(item_id=None, mode=None):
     sums = defaultdict(lambda:0, sums)
     for item in items:
         month_name = item.expected.strftime('%B')
-        sums[month_name] += item.price
+        if item.price:
+            sums[month_name] += item.price
 
     # will not buy 
     kwargs['will_not_buy'] = \
