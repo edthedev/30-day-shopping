@@ -153,6 +153,9 @@ def index(item_id=None, mode=None):
         sums[month_name] += item.price
     kwargs['sums'] = sums
 
+    kwargs['saved'] = 0
+    for item in kwargs['will_not_buy'].iterator():
+        kwargs['saved'] += item.price
     return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
