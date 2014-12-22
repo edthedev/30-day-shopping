@@ -154,7 +154,7 @@ def index(item_id=None, mode=None):
     kwargs['sums'] = sums
 
     kwargs['saved'] = 0
-    for item in kwargs['will_not_buy'].iterator():
+    for item in kwargs['will_not_buy']:
         kwargs['saved'] += item.price
     return render_template('template.html', **kwargs)
 
