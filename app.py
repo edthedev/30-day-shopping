@@ -139,12 +139,12 @@ def index(item_id=None, mode=None):
     kwargs['will_not_buy'] = \
             Purchase.select().where(
                     Purchase.resolved!=None,
-                    Purchase.bought==False).order_by(Purchase.expected)
+                    Purchase.bought==False).order_by(Purchase.resolved)
     # bought...
     bought_items = \
             Purchase.select().where(
                     Purchase.resolved!=None,
-                    Purchase.bought==True).order_by(Purchase.expected)
+                    Purchase.bought==True).order_by(Purchase.resolved)
     kwargs['recently_bought'] = bought_items
 
     # Include bought items in sums...
@@ -153,6 +153,9 @@ def index(item_id=None, mode=None):
         sums[month_name] += item.price
     kwargs['sums'] = sums
 
+    kwargs['saved'] = 0
+    for item in kwargs['will_not_buy']:
+        kwargs['saved'] += item.price
     return render_template('template.html', **kwargs)
 
 if __name__ == '__main__':
