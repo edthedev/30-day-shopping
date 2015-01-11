@@ -143,7 +143,8 @@
 	<ul>
 		{% for purchase in recently_bought %}
 		<li>
-			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		<a href='{{ url_for('index', item_id=purchase.id) }}'
+			>{{ purchase.resolved }} - {{ purchase.name }} ${{ purchase.price }}</a>
 		</li>
 		{% else %}
 		<li>Nothing bought recently.</li>
@@ -151,11 +152,12 @@
 	</ul>
 
 	<h2>Will Not Buy</h2>
-	Total saved: {{ saved }}
+	Total saved: ${{ "{0:.2f}".format(saved) }}
 	<ul>
 		{% for purchase in will_not_buy %}
 		<li>
-			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+		<a href='{{ url_for('index', item_id=purchase.id) }}'
+		>{{ purchase.resolved }} - {{ purchase.name }} ${{ purchase.price }}</a>
 		</li>
 		{% else %}
 		<li>No purchases skipped yet.</li>
