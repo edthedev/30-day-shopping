@@ -112,7 +112,7 @@
 	</form>
 	<h2>Planned Purchases </h2>
 	<ul>
-		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
+		<li><a href="{{ url_for('index') }}"><button class='btn'>Add a purchase.</button></a></li>
 		{% for purchase in items %}
 		<li>
 			{% if mode == 'bought' %}
