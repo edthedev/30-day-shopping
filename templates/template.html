@@ -79,9 +79,12 @@
 <!-- End of Navigation -->
 	{{ debug }}
 	<ul>
-		<li><a href={{ url_for('index') }}>Home</a></li>
-		<li><a href={{ url_for('index', mode='wont') }}>Won't buy something.</a></li>
-		<li><a href={{ url_for('index', mode='bought') }}>Bought something.</a></li>
+	<li><a href={{ url_for('index') }}>
+	<button class='btn'>Home</button></a></li>
+	<li><a href={{ url_for('index', mode='wont') }}>
+	<button class='btn btn-primary'>Won't buy something.</button></a></li>
+<li><a href={{ url_for('index', mode='bought') }}>
+	<button class='btn'>Bought something.</button></a></li>
 	</ul>
 	{% if edit_item %}
 	<h2> Modify purchase {{ edit_item.id }}</h2>
@@ -109,15 +112,15 @@
 	</form>
 	<h2>Planned Purchases </h2>
 	<ul>
-		<li><a href="{{ url_for('index') }}">Add a purchase.</a></li>
+		<li><a href="{{ url_for('index') }}"><button class='btn'>Add a purchase.</button></a></li>
 		{% for purchase in items %}
 		<li>
 			{% if mode == 'bought' %}
 			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
-				<input type=submit value="Bought {{ purchase }}"/></form>
+				<input class='btn btn-primary' type=submit value="Bought {{ purchase }}"/></form>
 			{% elif mode == 'wont' %}
 			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
-				<input type=submit value="Won't buy {{ purchase }}"/></form>
+				<input class='btn btn-primary' type=submit value="Won't buy {{ purchase }}"/></form>
 			{% else %}
 			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
 			{% endif %}
