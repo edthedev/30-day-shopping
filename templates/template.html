@@ -117,10 +117,10 @@
 		<li>
 			{% if mode == 'bought' %}
 			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
-				<input type=submit value="Bought {{ purchase }}"/></form>
+				<input class='btn btn-primary' type=submit value="Bought {{ purchase }}"/></form>
 			{% elif mode == 'wont' %}
 			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
-				<input type=submit value="Won't buy {{ purchase }}"/></form>
+				<input class='btn btn-primary' type=submit value="Won't buy {{ purchase }}"/></form>
 			{% else %}
 			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
 			{% endif %}
