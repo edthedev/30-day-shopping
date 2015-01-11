@@ -130,7 +130,7 @@
 	<ul>
 	{% for month, cost in sums.iteritems() %}
 	<li>
-		{{ month }} - ${{ cost }}
+	{{ month }} - ${{ cost }} - ${{ "{0:.2f}".format(averages[month]) }}
 	</li>
 	{% else %}
 		No sums...
@@ -148,6 +148,7 @@
 	</ul>
 
 	<h2>Will Not Buy</h2>
+	Total saved: {{ saved }}
 	<ul>
 		{% for purchase in will_not_buy %}
 		<li>
