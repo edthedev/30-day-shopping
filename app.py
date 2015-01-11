@@ -128,6 +128,8 @@ def index(item_id=None, mode=None):
 
     # Sum purchases by month...
     sums = {}
+    averages = {}
+
     from collections import defaultdict
     sums = defaultdict(lambda:0, sums)
     for item in items:
@@ -151,7 +153,12 @@ def index(item_id=None, mode=None):
     for item in bought_items:
         month_name = item.expected.strftime('%B')
         sums[month_name] += item.price
+
+    for month_name in sums:
+        averages[month_name] = sums[month_name] / 30
+
     kwargs['sums'] = sums
+    kwargs['averages'] = averages
 
     kwargs['saved'] = 0
     for item in kwargs['will_not_buy']:
