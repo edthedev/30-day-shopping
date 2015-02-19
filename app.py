@@ -1,4 +1,18 @@
+# http://fahhem.com/blog/2011/10/django-models-without-apps-or-everything-django-truly-in-a-single-file/
 import os
+from django.conf.urls.defaults import patterns
+from django.http import HttpResponse
+filepath, extension = os.path.splitext(__file__)
+ROOT_URLCONF = os.path.basename(filepath)
+
+def yoohoo(request):
+    return HttpResponse('Yoohoo!')
+
+urlpatterns = patterns('', (r'^hello/$', yoohoo))
+
+
+# Old
+# ----
 
 PROJECT_ROOT = os.path.dirname(__file__)
 _LOG_FILE = os.path.join(PROJECT_ROOT, 'shopping.log')

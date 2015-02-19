@@ -1,4 +1,5 @@
 flask
+django
 peewee
 wtforms
 wtf-peewee
