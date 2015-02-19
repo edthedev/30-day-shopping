@@ -42,13 +42,18 @@ DOMAIN = {
     'invoices': Invoices._eve_schema['invoices']
     }
 
+SETTINGS = {
+    'DOMAIN': DOMAIN,
+}
+
 from eve import Eve
 from eve_sqlalchemy import SQL
 from eve_sqlalchemy.validation import ValidatorSQL
 
-app = Eve(validator=ValidatorSQL, data=SQL)
+app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
 # bind SQLAlchemy
 db = app.data.driver
 Base.metadata.bind = db.engine
 db.Model = Base
+app.run(debug=True)
