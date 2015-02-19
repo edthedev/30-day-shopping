@@ -1,4 +1,3 @@
-flask
-peewee
-wtforms
-wtf-peewee
+eve
+SQLAlchemy
+eve_sqlalchemy

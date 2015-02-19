@@ -6,9 +6,13 @@ VPIP=$(VENV)/bin/pip
 ########################################
 #  Development Tasks
 ########################################
+venv:
+	virtualenv $(VENV)
 
 requirements:
 	$(VPIP) install -r $(BASEDIR)/requirements.txt
+
+setup: venv requirements
 
 checkin_all_the_things:
 	cd $(BASEDIR); git commit -a -m "CHECKIN ALL THE THINGS!!1!"
@@ -17,7 +21,7 @@ checkin_all_the_things:
 #	$(VPYTHON) $(BASEDIR)/app.py syncdb
 
 runserver:
-	$(VPYTHON) $(BASEDIR)/app.py
+	$(VPYTHON) $(BASEDIR)/new.py
 
 open: 
 	open http://127.0.0.1:5000/
