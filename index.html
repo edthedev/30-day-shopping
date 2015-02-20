@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="ctrl">
+<head>
+<meta charset="UTF-8">
+
+	<!-- Don't suck at default zoom level. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+
+	</meta>
+
+    <!-- JQuery for JQueryUI and Bootstrap-->
+	<script src=
+		"static/jquery/jquery-1.11.1.js"></script>
+
+    <!-- Boostrap -->
+	<link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+	<link href="static/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+
+	<script src="static/bootstrap/js/bootstrap.js"></script>
+
+	<!-- Base app css -->
+	<link href="static/base.css" rel="stylesheet">
+
+	<!-- JQuery UI -->
+	<link href="static/jquery-ui-1.11.1/jquery-ui.css" rel="stylesheet">
+
+<!-- Start Angular JS -->
+	<script src=
+		"static/node_modules/angular/angular.js"></script>
+
+	<script src= "static/node_modules/lodash/lodash.js"></script>
+
+	<script src= "static/node_modules/restangular/src/restangular.js"></script>
+
+	<!-- My Angular JS Controller -->
+	<script src="static/controller.js"></script>
+
+<!-- End Angular JS -->
+
+	<script>
+		// Bind a Date Picker to any control named id_completed
+		 $(function() {
+			 $( "#expected" ).datepicker();
+			 $( "#resolved" ).datepicker();
+			 $( "#expected" ).datepicker( "option", "dateFormat", "yy-mm-dd");
+			 $( "#resolved" ).datepicker( "option", "dateFormat", "yy-mm-dd");
+		 });
+	</script>
+
+</meta>
+	<title>30 Day Purchase App</title>
+</head>
+<body>
+	{{ debug }}
+	<ul>
+	<li><a href={{ url_for('index') }}>
+	<button class='btn'>Home</button></a></li>
+	<li><a href={{ url_for('index', mode='wont') }}>
+	<button class='btn btn-primary'>Won't buy something.</button></a></li>
+<li><a href={{ url_for('index', mode='bought') }}>
+	<button class='btn'>Bought something.</button></a></li>
+	</ul>
+	{% if edit_item %}
+	<h2> Modify purchase {{ edit_item.id }}</h2>
+	{% else %}
+	<h2> Add a purchase </h2>
+	{% endif %}
+	{% if form.errors %}
+		<ul class="errors">
+			{% for field_name, field_errors in form.errors|dictsort if field_errors %}
+				{% for error in field_errors %}
+					<li>{{ form[field_name].label }}: {{ error }}</li>
+				{% endfor %}
+			{% endfor %}
+		</ul>
+	{% endif %}
+	{% if edit_item %}
+	<form action="{{ url_for('index', item_id=edit_item.id) }}" method=POST>
+	{% else %}
+	<form action="{{ url_for('index') }}" method=POST>
+	{% endif %}
+	{% for field in form %}
+	<p>{{ field.label }} {{ field(foo='bar') }}</p>
+	{% endfor %}
+	<input type=submit value=Submit />
+	</form>
+	<h2>Planned Purchases </h2>
+	<ul>
+		<li><a href="{{ url_for('index') }}"><button class='btn'>Add a purchase.</button></a></li>
+		{% for purchase in items %}
+		<li>
+			{% if mode == 'bought' %}
+			<form method=POST action="{{ url_for('bought', item_id=purchase.id) }}">
+				<input class='btn btn-primary' type=submit value="Bought {{ purchase }}"/></form>
+			{% elif mode == 'wont' %}
+			<form method=POST action="{{ url_for('wont', item_id=purchase.id) }}">
+				<input class='btn btn-primary' type=submit value="Won't buy {{ purchase }}"/></form>
+			{% else %}
+			<a href='{{ url_for('index', item_id=purchase.id) }}'>{{ purchase }}</a>
+			{% endif %}
+		</li>
+		{% else %}
+		<li>No purchases planned at the moment.</li>
+		{% endfor %}
+	</ul>
+	<h2>Expected Monthly Costs</h2>
+	<ul>
+	{% for month, cost in sums.iteritems() %}
+	<li>
+	{{ month }} - Total: ${{ "{0:.2f}".format(cost) }} - Avg. Daily: ${{ "{0:.2f}".format(averages[month]) }} 
+	</li>
+	{% else %}
+		No sums...
+	{% endfor %}
+	</ul>
+	<h2>Recently Bought</h2>
+	<ul>
+		{% for purchase in recently_bought %}
+		<li>
+		<a href='{{ url_for('index', item_id=purchase.id) }}'
+			>{{ purchase.resolved }} - {{ purchase.name }} ${{ purchase.price }}</a>
+		</li>
+		{% else %}
+		<li>Nothing bought recently.</li>
+		{% endfor %}
+	</ul>
+
+	<h2>Will Not Buy</h2>
+	Total saved: ${{ "{0:.2f}".format(saved) }}
+	<ul>
+		{% for purchase in will_not_buy %}
+		<li>
+		<a href='{{ url_for('index', item_id=purchase.id) }}'
+		>{{ purchase.resolved }} - {{ purchase.name }} ${{ purchase.price }}</a>
+		</li>
+		{% else %}
+		<li>No purchases skipped yet.</li>
+		{% endfor %}
+	</ul>
+
+</body>
+</html>
