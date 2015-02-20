@@ -11,6 +11,7 @@ _APP_NAME = 'shopping'
 _LOG_FILE = os.path.join(APP_ROOT, _APP_NAME + '.log')
 logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
 _LOGGER = logging.getLogger(__name__)
+_LOGGER.error('start')
 
 # -----------------------------------
 # Database
@@ -62,6 +63,7 @@ class Purchase(CommonColumns):
 
 engine = create_engine('sqlite:///shopping2.db')
 Base.metadata.create_all(engine, checkfirst=True)
+_LOGGER.debug('finished db')
 
 # -----------------------------------
 # API
@@ -85,6 +87,7 @@ from eve_sqlalchemy.validation import ValidatorSQL
 
 app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
+_LOGGER.debug('built eve app')
 # Serve index for local testing...
 
 from flask import send_from_directory
@@ -94,9 +97,10 @@ def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-@app.route('/static/<path:path>', methods=['GET'])
+@app.route('/static/<path>', methods=['GET'])
 def send_static(path):
-    _LOGGER.debug('Whut?')
+    _LOGGER.error('Duh?')
+    app.logger.error('Whut?')
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
@@ -107,4 +111,5 @@ def send_static(path):
 db = app.data.driver
 Base.metadata.bind = db.engine
 db.Model = Base
+_LOGGER.debug('about to start')
 app.run(debug=True)
