@@ -11,6 +11,8 @@ from sqlalchemy import (
     Integer,
     Decimal,
     DateTime)
+from sqlalchemy import create_engine
+
 
 Base = declarative_base()
 
@@ -44,6 +46,9 @@ class Purchase(CommonColumns):
                 # Or 30 days if price is unknown.
                 self.expected = self.added + timedelta(days=30)
         super(Purchase, self).save()
+
+engine = create_engine('sqlite://shopping2.db')
+Base.metadata.create_all(engine, checkfirst=True)
 
 # -----------------------------------
 # API
