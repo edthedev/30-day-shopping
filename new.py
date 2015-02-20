@@ -9,7 +9,7 @@ from sqlalchemy import (
     Column,
     String,
     Integer,
-    Decimal,
+    Float,
     DateTime)
 from sqlalchemy import create_engine
 
@@ -24,7 +24,7 @@ class CommonColumns(Base):
 class Purchase(CommonColumns):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
-    price = Column(Decimal)
+    price = Column(Float(precision=2))
     expected = Column(DateTime)
     bought = Column(DateTime)
     resolved = Column(DateTime)
