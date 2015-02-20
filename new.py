@@ -1,8 +1,19 @@
 import os
+import logging
 from datetime import timedelta
 
+APP_ROOT = os.path.dirname(__file__)
+_APP_NAME = 'shopping'
+
 # -----------------------------------
-# Database stuff
+# Logging
+# -----------------------------------
+_LOG_FILE = os.path.join(APP_ROOT, _APP_NAME + '.log')
+logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
+_LOGGER = logging.getLogger(__name__)
+
+# -----------------------------------
+# Database
 # -----------------------------------
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import func
@@ -76,18 +87,19 @@ app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
 # Serve index for local testing...
 
-APP_ROOT = os.path.dirname(__file__)
-
-from flask import send_from_directory 
+from flask import send_from_directory
 @app.route('/index', methods=['GET'])
 def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-@app.route('/static/<path:path>')
-def send_js(path):
+@app.route('/static/<path:path>', methods=['GET'])
+def send_static(path):
     return send_from_directory(
-        os.path.join(APP_ROOT, 'static'), path)
+        os.path.join(APP_ROOT), 'index.html')
+
+    #return send_from_directory(
+    #    os.path.join(APP_ROOT, 'static'), path)
 
 # bind SQLAlchemy
 db = app.data.driver
