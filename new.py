@@ -90,11 +90,13 @@ app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 from flask import send_from_directory
 @app.route('/index', methods=['GET'])
 def index():
+    _LOGGER.error('Index?')
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
 @app.route('/static/<path:path>', methods=['GET'])
 def send_static(path):
+    _LOGGER.debug('Whut?')
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
