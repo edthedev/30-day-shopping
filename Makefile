@@ -33,3 +33,5 @@ angular:
 	# Lodash is required by restangular
 	cd static;npm install angular lodash restangular
 
+taillog:
+	tail -f shopping.log
