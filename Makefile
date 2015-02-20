@@ -28,3 +28,8 @@ open:
 
 edit:
 	vim app.py templates/template.html
+
+angular:
+	# Lodash is required by restangular
+	cd static;npm install angular lodash restangular
+
