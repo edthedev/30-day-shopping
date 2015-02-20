@@ -75,11 +75,19 @@ from eve_sqlalchemy.validation import ValidatorSQL
 app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
 # Serve index for local testing...
+
+APP_ROOT = os.path.dirname(__file__)
+
 from flask import send_from_directory 
 @app.route('/index', methods=['GET'])
 def index():
     return send_from_directory(
-        os.path.expanduser('~/projects/30-day-shopping'), 'index.html')
+        os.path.join(APP_ROOT), 'index.html')
+
+@app.route('/static/<path:path>')
+def send_js(path):
+    return send_from_directory(
+        os.path.join(APP_ROOT, 'static'), path)
 
 # bind SQLAlchemy
 db = app.data.driver
