@@ -22,6 +22,7 @@ class CommonColumns(Base):
     _updated = Column(DateTime, default=func.now(), onupdate=func.now())
 
 class Purchase(CommonColumns):
+    __tablename__ = 'purchase'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
     price = Column(Float(precision=2))
@@ -47,7 +48,7 @@ class Purchase(CommonColumns):
                 self.expected = self.added + timedelta(days=30)
         super(Purchase, self).save()
 
-engine = create_engine('sqlite://shopping2.db')
+engine = create_engine('sqlite:///shopping2.db')
 Base.metadata.create_all(engine, checkfirst=True)
 
 # -----------------------------------
