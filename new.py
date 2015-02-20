@@ -77,3 +77,17 @@ db = app.data.driver
 Base.metadata.bind = db.engine
 db.Model = Base
 app.run(debug=True)
+
+# Serve index for local testing...
+from flask import send_from_directory 
+# app = Flask(__name__)
+# app.url_map.strict_slashes = False
+
+# Post filter to allow angular tags...
+# from flask.ext.triangle import Triangle
+# Triangle(app)
+
+@app.route('/', methods=['GET'])
+def index():
+    return send_from_directory('', 'index.html')
+
