@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 # -----------------------------------
@@ -73,22 +74,15 @@ from eve_sqlalchemy.validation import ValidatorSQL
 
 app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
+# Serve index for local testing...
+from flask import send_from_directory 
+@app.route('/index', methods=['GET'])
+def index():
+    return send_from_directory(
+        os.path.expanduser('~/projects/30-day-shopping'), 'index.html')
+
 # bind SQLAlchemy
 db = app.data.driver
 Base.metadata.bind = db.engine
 db.Model = Base
 app.run(debug=True)
-
-# Serve index for local testing...
-from flask import send_from_directory 
-# app = Flask(__name__)
-# app.url_map.strict_slashes = False
-
-# Post filter to allow angular tags...
-# from flask.ext.triangle import Triangle
-# Triangle(app)
-
-@app.route('/', methods=['GET'])
-def index():
-    return send_from_directory('', 'index.html')
-
