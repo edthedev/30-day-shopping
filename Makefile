@@ -21,7 +21,7 @@ checkin_all_the_things:
 #	$(VPYTHON) $(BASEDIR)/app.py syncdb
 
 runserver:
-	$(VPYTHON) $(BASEDIR)/app.py &
+	$(VPYTHON) $(BASEDIR)/app.py
 
 open: 
 	open http://127.0.0.1:5000/
@@ -33,5 +33,5 @@ static_files:
 	# Lodash is required by restangular
 	cd static; npm install angular lodash restangular jquery bootstrap jquery-ui
 
-taillog: runserver
+taillog: 
 	tail -f shopping.log
