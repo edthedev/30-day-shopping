@@ -53,6 +53,21 @@
 </head>
 <body>
 	{{ debug }}
+
+	<h2> Add a purchase </h2>
+<form novalidate class="simple-form">
+	<ul>
+	<li>
+	<label for=name>Item:</label>
+	<input id=name type="text" ng-model="purchase.name" /> 
+	<label for=price>Price: </label>
+	<input id=price type="text" ng-model="purchase.price" /> 
+	<span class="btn-group">
+	<input class="btn btn-mini" 
+		type="submit" ng-click="add_purchase()" value="Add" />
+</span>
+
+
 	<ul>
 	<li><a href={{ url_for('index') }}>
 	<button class='btn'>Home</button></a></li>
@@ -64,7 +79,7 @@
 	{% if edit_item %}
 	<h2> Modify purchase {{ edit_item.id }}</h2>
 	{% else %}
-	<h2> Add a purchase </h2>
+
 	{% endif %}
 	{% if form.errors %}
 		<ul class="errors">

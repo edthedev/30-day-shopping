@@ -27,7 +27,7 @@ open:
 	open http://127.0.0.1:5000/
 
 edit:
-	vim app.py templates/template.html
+	vim app.py index.html
 
 angular:
 	# Lodash is required by restangular
