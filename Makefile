@@ -38,3 +38,4 @@ taillog:
 
 explore_db:
 	sqlite3 shopping2.db
+	# Hint: .tables .schema
