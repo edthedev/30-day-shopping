@@ -104,7 +104,6 @@ def index():
 def athingisdone(thepath):
     _LOGGER.error('Got a request for %s', thepath)
     return send_from_directory( os.path.join(APP_ROOT, 'static'), thepath)
-    # return send_from_directory('static', thepath)
 
 
 # bind SQLAlchemy
