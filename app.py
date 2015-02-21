@@ -100,9 +100,10 @@ def index():
 @app.route('/static/<path>', methods=['GET'])
 def send_static(path):
     _LOGGER.error('Duh?')
-    app.logger.error('Whut?')
-    return send_from_directory(
-        os.path.join(APP_ROOT), 'index.html')
+    app.logger.error('Requested static file %s', path)
+    static_file = os.path.join(APP_ROOT, 'static', path)
+    app.logger.error('Resolved static file to %s', static_file)
+    return send_from_directory('', static_file)
 
     #return send_from_directory(
     #    os.path.join(APP_ROOT, 'static'), path)
