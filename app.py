@@ -79,6 +79,7 @@ DOMAIN = {
 
 SETTINGS = {
     'DOMAIN': DOMAIN,
+    'URL_PREFIX':'api',
 }
 
 from eve import Eve
@@ -91,20 +92,21 @@ _LOGGER.debug('built eve app')
 # Serve index for local testing...
 
 from flask import send_from_directory
-@app.route('/index', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     _LOGGER.error('Index?')
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-@app.route('/static/<filepath>', methods=['GET'])
+@app.route('/static/<path:filepath>', methods=['GET'])
 def send_static(filepath):
     _LOGGER.error('Duh?')
     app.logger.error('Requested static file %s', filepath)
     static_file = os.path.join(APP_ROOT, 'static', filepath)
     app.logger.error('Resolved static file to %s', static_file)
     path, filename = os.path.split(static_file)
-    return send_from_directory(path, filename)
+    # return send_from_directory(path, filename)
+    return app.send_static_file(filepath)
 
     #return send_from_directory(
     #    os.path.join(APP_ROOT, 'static'), path)
