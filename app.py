@@ -11,6 +11,9 @@ _APP_NAME = 'shopping'
 _LOG_FILE = os.path.join(APP_ROOT, _APP_NAME + '.log')
 logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
 _LOGGER = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
+_LOGGER.addHandler(stream_handler)
 _LOGGER.error('start')
 
 # -----------------------------------
@@ -62,7 +65,9 @@ class Purchase(CommonColumns):
         super(Purchase, self).save()
 
 engine = create_engine('sqlite:///shopping2.db')
-Base.metadata.create_all(engine, checkfirst=True)
+# Base.metadata.create_all(engine, checkfirst=True)
+Base.metadata.create_all(engine)
+Purchase.metadata.create_all(engine)
 _LOGGER.debug('finished db')
 
 # -----------------------------------
