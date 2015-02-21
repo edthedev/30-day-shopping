@@ -97,13 +97,14 @@ def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-@app.route('/static/<path>', methods=['GET'])
-def send_static(path):
+@app.route('/static/<filepath>', methods=['GET'])
+def send_static(filepath):
     _LOGGER.error('Duh?')
-    app.logger.error('Requested static file %s', path)
-    static_file = os.path.join(APP_ROOT, 'static', path)
+    app.logger.error('Requested static file %s', filepath)
+    static_file = os.path.join(APP_ROOT, 'static', filepath)
     app.logger.error('Resolved static file to %s', static_file)
-    return send_from_directory('', static_file)
+    path, filename = os.path.split(static_file)
+    return send_from_directory(path, filename)
 
     #return send_from_directory(
     #    os.path.join(APP_ROOT, 'static'), path)
