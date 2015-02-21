@@ -21,7 +21,7 @@ checkin_all_the_things:
 #	$(VPYTHON) $(BASEDIR)/app.py syncdb
 
 runserver:
-	$(VPYTHON) $(BASEDIR)/new.py
+	$(VPYTHON) $(BASEDIR)/app.py
 
 open: 
 	open http://127.0.0.1:5000/
