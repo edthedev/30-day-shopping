@@ -1,7 +1,68 @@
+''' Shop slowly - add items to this web app.
+See if you still want them 30 days later.
+
+Also meant to serve as a light weight example using Python and NodeJS.
+
+- Sqlalchemy describes and creates the database.
+- Eve provides the API, based on the Sqlalchemy model, 
+and (in local development mode) serves the main index.html file.
+- AngularJS provides the user experience, and sends data updates to the Eve API.
+
+-----------------------------------
+License:
+
+Copyright 2014 Edward Delaporte
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-----------------------------------
+
+'''
+__author__ = 'Edward Delaporte edthedev@gmail.com'
+
+# -----------------------------------
+# Imports
+# -----------------------------------
+
+# Python native imports
 import os
 import logging
 from datetime import timedelta
 
+# 3rd party imports
+# Eve provides the app and API
+from eve import Eve
+from eve_sqlalchemy import SQL
+from eve_sqlalchemy.validation import ValidatorSQL
+# Sqlalchemy handles the database
+#   and describes the data model for Eve.
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import func
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Float,
+    DateTime)
+from sqlalchemy import create_engine
+
+
+# -----------------------------------
+# All about the app.
+# This is a Flask app and an Eve app.
+# (Eve app is a subclass of Flask app)
+# -----------------------------------
+app = Eve(settings=SETTINGS,
+        validator=ValidatorSQL, data=SQL, static_url_path='/')
 APP_ROOT = os.path.dirname(__file__)
 _APP_NAME = 'shopping'
 
@@ -17,22 +78,15 @@ _LOGGER.addHandler(stream_handler)
 _LOGGER.error('start')
 
 # -----------------------------------
-# Database
+# Database models.
 # -----------------------------------
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import func
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Float,
-    DateTime)
-from sqlalchemy import create_engine
-
-
 Base = declarative_base()
+db = app.data.driver
+Base.metadata.bind = db.engine
+db.Model = Base
 
 class CommonColumns(Base):
+    ''' Every table deserves created and updated datetime fields. '''
     __abstract__ = True
     _created = Column(DateTime, default=func.now())
     _updated = Column(DateTime, default=func.now(), onupdate=func.now())
@@ -66,9 +120,11 @@ class Purchase(CommonColumns):
 
 engine = create_engine('sqlite:///shopping2.db')
 # Base.metadata.create_all(engine, checkfirst=True)
-Base.metadata.create_all(engine)
-Purchase.metadata.create_all(engine)
+# Base.metadata.create_all(engine)
+# Purchase.metadata.create_all(engine)
+db.create_all(engine)
 _LOGGER.debug('finished db')
+
 
 # -----------------------------------
 # API
@@ -87,13 +143,6 @@ SETTINGS = {
     'URL_PREFIX':'api',
 }
 
-from eve import Eve
-from eve_sqlalchemy import SQL
-from eve_sqlalchemy.validation import ValidatorSQL
-
-app = Eve(settings=SETTINGS, 
-        validator=ValidatorSQL, data=SQL, static_url_path='/')
-# app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
 _LOGGER.debug('built eve app')
 # Serve index for local testing...
