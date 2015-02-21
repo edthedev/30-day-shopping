@@ -35,3 +35,6 @@ static_files:
 
 taillog: 
 	tail -f shopping.log
+
+explore_db:
+	sqlite3 shopping2.db
