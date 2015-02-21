@@ -21,17 +21,17 @@ checkin_all_the_things:
 #	$(VPYTHON) $(BASEDIR)/app.py syncdb
 
 runserver:
-	$(VPYTHON) $(BASEDIR)/app.py
+	$(VPYTHON) $(BASEDIR)/app.py &
 
 open: 
 	open http://127.0.0.1:5000/
 
 edit:
-	vim app.py index.html
+	vim app.py index.html static/controller.js
 
-angular:
+static_files:
 	# Lodash is required by restangular
-	cd static;npm install angular lodash restangular
+	cd static; npm install angular lodash restangular jquery bootstrap jquery-ui
 
-taillog:
+taillog: runserver
 	tail -f shopping.log
