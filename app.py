@@ -111,8 +111,6 @@ class Purchase(CommonColumns):
                 self.expected = self.added + timedelta(days=30)
         super(Purchase, self).save()
 
-engine = create_engine('sqlite:///shopping2.db')
-Base.metadata.create_all(engine, checkfirst=True)
 # Base.metadata.create_all(engine)
 # Purchase.metadata.create_all(engine)
 _LOGGER.debug('finished creating db')
@@ -155,7 +153,9 @@ app = Eve(auth=NoAuth, settings=SETTINGS,
 
 # Bind API to Database
 db = app.data.driver
+db.engine = create_engine('sqlite:///shopping2.db')
 Base.metadata.bind = db.engine
+Base.metadata.create_all(db.engine, checkfirst=True)
 db.Model = Base
 # db.create_all()
 
