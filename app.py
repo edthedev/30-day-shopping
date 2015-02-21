@@ -86,7 +86,9 @@ from eve import Eve
 from eve_sqlalchemy import SQL
 from eve_sqlalchemy.validation import ValidatorSQL
 
-app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
+app = Eve(settings=SETTINGS, 
+        validator=ValidatorSQL, data=SQL, static_url_path='/')
+# app = Eve(settings=SETTINGS, validator=ValidatorSQL, data=SQL)
 
 _LOGGER.debug('built eve app')
 # Serve index for local testing...
@@ -98,18 +100,12 @@ def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-@app.route('/static/<path:filepath>', methods=['GET'])
-def send_static(filepath):
-    _LOGGER.error('Duh?')
-    app.logger.error('Requested static file %s', filepath)
-    static_file = os.path.join(APP_ROOT, 'static', filepath)
-    app.logger.error('Resolved static file to %s', static_file)
-    path, filename = os.path.split(static_file)
-    # return send_from_directory(path, filename)
-    return app.send_static_file(filepath)
+@app.route('/static/<path:thepath>')
+def athingisdone(thepath):
+    _LOGGER.error('Got a request for %s', thepath)
+    return send_from_directory( os.path.join(APP_ROOT, 'static'), thepath)
+    # return send_from_directory('static', thepath)
 
-    #return send_from_directory(
-    #    os.path.join(APP_ROOT, 'static'), path)
 
 # bind SQLAlchemy
 db = app.data.driver
