@@ -139,6 +139,8 @@ DOMAIN = {
 SETTINGS = {
     'DOMAIN': DOMAIN,
     'URL_PREFIX':'api',
+    'PUBLIC_METHODS':['GET', 'PUT', 'POST'],
+    'PUBLIC_ITEM_METHODS':['GET','PUT','POST'],
 }
 
 from eve.auth import BasicAuth
@@ -155,8 +157,7 @@ app = Eve(auth=NoAuth, settings=SETTINGS,
 db = app.data.driver
 Base.metadata.bind = db.engine
 db.Model = Base
-# db.create_all(engine)
-
+# db.create_all()
 
 _LOGGER.debug('built eve app')
 # Serve index for local testing...
