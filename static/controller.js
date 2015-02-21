@@ -12,7 +12,7 @@ function unpack($obj){
     angular.module('app').controller(
 		'ctrl', function($scope, Restangular){
 
-        Restangular.setBaseUrl('/api/api')
+        Restangular.setBaseUrl('/api')
         Restangular.addResponseInterceptor(unpack);
 		
         $scope.get_purchases = function(){
