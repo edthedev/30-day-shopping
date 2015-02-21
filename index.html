@@ -9,11 +9,10 @@
 	</meta>
 
     <!-- JQuery for JQueryUI and Bootstrap-->
-	<script src=
-		"static/jquery/jquery-1.11.1.js"></script>
+	<script src="static/node_modules/jquery/dist/jquery.js"></script>
 
     <!-- Boostrap -->
-	<link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="static/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
 	<link href="static/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
 
@@ -52,7 +51,6 @@
 	<title>30 Day Purchase App</title>
 </head>
 <body>
-	{{ debug }}
 
 	<h2> Add a purchase </h2>
 <form novalidate class="simple-form">
@@ -66,7 +64,6 @@
 	<input class="btn btn-mini" 
 		type="submit" ng-click="add_purchase()" value="Add" />
 </span>
-
 
 	<ul>
 	<li><a href={{ url_for('index') }}>
