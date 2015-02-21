@@ -1,5 +1,5 @@
 // Restangular needs help unpacking
-//  PeeWee Flask API results.
+//  API results.
 function unpack($obj){
     console.log($obj);
     return $obj['objects'];
@@ -33,9 +33,10 @@ function unpack($obj){
 		// Add a purchase...
         $scope.add_purchase = function(){
 			console.log('Scope: ');
-		    console.log($scope);
+			console.log($scope);
 			Restangular.all('purchase').post($scope.purchase).then(function(purchase) {
 			  $scope.purchase.name = null;
+			  $scope.purchase.price = null;
 			  $scope.get_purchases();
 		    });
         }
