@@ -57,12 +57,8 @@ from sqlalchemy import create_engine
 
 
 # -----------------------------------
-# All about the app.
-# This is a Flask app and an Eve app.
-# (Eve app is a subclass of Flask app)
+# Constants
 # -----------------------------------
-app = Eve(settings=SETTINGS,
-        validator=ValidatorSQL, data=SQL, static_url_path='/')
 APP_ROOT = os.path.dirname(__file__)
 _APP_NAME = 'shopping'
 
@@ -81,9 +77,6 @@ _LOGGER.error('start')
 # Database models.
 # -----------------------------------
 Base = declarative_base()
-db = app.data.driver
-Base.metadata.bind = db.engine
-db.Model = Base
 
 class CommonColumns(Base):
     ''' Every table deserves created and updated datetime fields. '''
@@ -119,13 +112,17 @@ class Purchase(CommonColumns):
         super(Purchase, self).save()
 
 engine = create_engine('sqlite:///shopping2.db')
-# Base.metadata.create_all(engine, checkfirst=True)
+Base.metadata.create_all(engine, checkfirst=True)
 # Base.metadata.create_all(engine)
 # Purchase.metadata.create_all(engine)
-db.create_all(engine)
-_LOGGER.debug('finished db')
+_LOGGER.debug('finished creating db')
 
 
+# -----------------------------------
+# All about the app.
+# This is a Flask app and an Eve app.
+# (Eve app is a subclass of Flask app)
+# -----------------------------------
 # -----------------------------------
 # API
 # -----------------------------------
@@ -142,6 +139,15 @@ SETTINGS = {
     'DOMAIN': DOMAIN,
     'URL_PREFIX':'api',
 }
+
+app = Eve(settings=SETTINGS,
+        validator=ValidatorSQL, data=SQL, static_url_path='/')
+
+# Bind API to Database
+db = app.data.driver
+Base.metadata.bind = db.engine
+db.Model = Base
+# db.create_all(engine)
 
 
 _LOGGER.debug('built eve app')
