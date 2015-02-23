@@ -1,3 +1,2 @@
-eve
 SQLAlchemy
-eve_sqlalchemy
+flask-restless
