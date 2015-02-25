@@ -15,11 +15,10 @@ function unpack($obj){
         Restangular.setBaseUrl('/api')
         Restangular.addResponseInterceptor(unpack);
 
-
-
 		$scope.get_savings = function(){
 			var query = '{"functions":[{"name":"sum", "field":"price"}]}';
-			$http.get('/eval/purchase?q=' + query).success(
+			var query = '{"functions":[{"name":"sum", "field":"price"}]}';
+			$http.get('/api/eval/purchase?q=' + query).success(
 				function(data, status, headers, config) {
 					console.log('result');
 					console.log(data);
