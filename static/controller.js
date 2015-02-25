@@ -17,15 +17,18 @@ function unpack($obj){
 		
         $scope.get_purchases = function(){
 
-			var query = {'filters':[{
-				'name':'bought',
-				'op':'eq',
-				'val':''
-			}]};
+			var query = '{"filters":[{"name":"bought","op":"is_null"}]}';
 			// Active goals
 			Restangular.all('purchase').getList(
 				{'q':query}).then(function (items){
                 $scope.purchases = items;
+            });
+
+			var query = '{"filters":[{"name":"bought","op":"is_not_null"}]}';
+			// Active goals
+			Restangular.all('purchase').getList(
+				{'q':query}).then(function (items){
+                $scope.bought = items;
             });
 
 		}

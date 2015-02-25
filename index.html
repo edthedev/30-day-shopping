@@ -87,21 +87,12 @@ ${{ purchase.price }} - {{ purchase.name }}
 		No sums...
 	{% endfor %}
 	</ul>
-	<h2>Recently Bought</h2>
-	<ul>
-		{% for purchase in recently_bought %}
-		<li>
-		<a href='{{ url_for('index', item_id=purchase.id) }}'
-			>{{ purchase.resolved }} - {{ purchase.name }} ${{ purchase.price }}</a>
-		</li>
-		{% else %}
-		<li>Nothing bought recently.</li>
-		{% endfor %}
-	</ul>
-
-
-
-
+<h2>Recently Bought</h2>
+<ul>
+<li ng-repeat="purchase in bought">
+${{ purchase.bought }} - {{ purchase.name }} ${{ purchase.price }}
+</li>
+<li ng-hide="bought.length">Nothing bought recently.</li>
 
 	<ul>
 	<li><a href={{ url_for('index') }}>
