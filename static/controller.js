@@ -14,6 +14,22 @@ function unpack($obj){
 
         Restangular.setBaseUrl('/api')
         Restangular.addResponseInterceptor(unpack);
+
+
+
+		$scope.get_savings = function(){
+			var query = '{"functions":[{"name":"sum", "field":"price"}]}';
+			$http.get('/eval/purchase?q=' + query).success(
+				function(data, status, headers, config) {
+					console.log('result');
+					console.log(data);
+					// $scope.saved = items['sum__price'];
+					// console.log($scope.saved);
+			      // this callback will be called asynchronously
+				  //     // when the response is available
+			    });
+		}
+        $scope.get_savings();
 		
         $scope.get_purchases = function(){
 
