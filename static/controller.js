@@ -17,9 +17,14 @@ function unpack($obj){
 		
         $scope.get_purchases = function(){
 
+			var query = {'filters':[{
+				'name':'bought',
+				'op':'eq',
+				'val':''
+			}]};
 			// Active goals
 			Restangular.all('purchase').getList(
-			{active:1, needs_work:1}).then(function (items){
+				{'q':query}).then(function (items){
                 $scope.purchases = items;
             });
 
