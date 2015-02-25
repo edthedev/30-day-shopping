@@ -10,7 +10,7 @@ function unpack($obj){
 (function(){
     angular.module('app', ['restangular']);
     angular.module('app').controller(
-		'ctrl', function($scope, Restangular){
+		'ctrl', function($scope, $http, Restangular){
 
         Restangular.setBaseUrl('/api')
         Restangular.addResponseInterceptor(unpack);
