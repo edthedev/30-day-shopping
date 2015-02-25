@@ -68,7 +68,7 @@ app.config['DEBUG'] = True
 # -----------------------------------
 # Database models.
 # -----------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shopping.db'
 db = flask.ext.sqlalchemy.SQLAlchemy(app)
 
 class Purchase(db.Model):
@@ -76,9 +76,9 @@ class Purchase(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255))
     price = db.Column(db.Float(precision=2))
+    bought = db.Column(db.Boolean)
+    done = db.Column(db.DateTime)
     expected = db.Column(db.DateTime)
-    bought = db.Column(db.DateTime)
-    resolved = db.Column(db.DateTime)
 
 #    class Meta:
 #        database = db

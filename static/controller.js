@@ -17,15 +17,13 @@ function unpack($obj){
 		
         $scope.get_purchases = function(){
 
-			var query = '{"filters":[{"name":"bought","op":"is_null"}]}';
-			// Active goals
+			var query = '{"filters":[{"name":"done","op":"is_null"}]}';
 			Restangular.all('purchase').getList(
 				{'q':query}).then(function (items){
                 $scope.purchases = items;
             });
 
-			var query = '{"filters":[{"name":"bought","op":"is_not_null"}]}';
-			// Active goals
+			var query = '{"filters":[{"name":"done","op":"is_not_null"}]}';
 			Restangular.all('purchase').getList(
 				{'q':query}).then(function (items){
                 $scope.bought = items;
@@ -41,23 +39,27 @@ function unpack($obj){
         $scope.add_purchase = function(){
 			console.log('Scope: ');
 			console.log($scope);
-			Restangular.all('purchase').post($scope.purchase).then(function(purchase) {
-			  $scope.purchase.name = null;
-			  $scope.purchase.price = null;
-			  $scope.get_purchases();
-		    });
+			Restangular.all('purchase').post($scope.purchase).then(
+					function(purchase) {
+					  $scope.purchase.name = null;
+					  $scope.purchase.price = null;
+					  $scope.get_purchases();
+					}
+			);
         }
 
 		$scope.buy = function(purchase){
             var item = Restangular.one('purchase', purchase.id);
-			item.bought = Date();
+			item.bought = true;
+			item.done = Date();
 			item.put();
 			$scope.get_purchases();
 		}
 
 		$scope.wont = function(purchase){
             var item = Restangular.one('purchase', purchase.id);
-			item.resolved = Date();
+			item.bought = false;
+			item.done = Date();
 			item.put();
 			$scope.get_purchases();
 		}
