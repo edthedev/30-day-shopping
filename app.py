@@ -4,7 +4,7 @@ See if you still want them 30 days later.
 Also meant to serve as a light weight example using Python and NodeJS.
 
 - Sqlalchemy describes and creates the database.
-- Eve provides the API, based on the Sqlalchemy model, 
+- Flask-Restless provides the API
 and (in local development mode) serves the main index.html file.
 - AngularJS provides the user experience, and sends data updates to the Eve API.
 
