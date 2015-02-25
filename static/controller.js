@@ -23,11 +23,18 @@ function unpack($obj){
                 $scope.purchases = items;
             });
 
-			var query = '{"filters":[{"name":"done","op":"is_not_null"}]}';
+			var query = '{"filters":[{"name":"bought","op":"eq","val":true}]}';
 			Restangular.all('purchase').getList(
 				{'q':query}).then(function (items){
                 $scope.bought = items;
             });
+
+			var query = '{"filters":[{"name":"bought","op":"neq","val":true}]}';
+			Restangular.all('purchase').getList(
+				{'q':query}).then(function (items){
+                $scope.wont = items;
+            });
+
 
 		}
 		$scope.get_purchases();
