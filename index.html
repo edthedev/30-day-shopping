@@ -65,39 +65,16 @@
 		type="submit" ng-click="add_purchase()" value="Add" />
 </span>
 
-	<ul>
-	<li><a href={{ url_for('index') }}>
-	<button class='btn'>Home</button></a></li>
-	<li><a href={{ url_for('index', mode='wont') }}>
-	<button class='btn btn-primary'>Won't buy something.</button></a></li>
-<li><a href={{ url_for('index', mode='bought') }}>
-	<button class='btn'>Bought something.</button></a></li>
-	</ul>
-	{% if edit_item %}
-	<h2> Modify purchase {{ edit_item.id }}</h2>
-	{% else %}
+<h2>Planned Purchases </h2>
 
-	{% endif %}
-	{% if form.errors %}
-		<ul class="errors">
-			{% for field_name, field_errors in form.errors|dictsort if field_errors %}
-				{% for error in field_errors %}
-					<li>{{ form[field_name].label }}: {{ error }}</li>
-				{% endfor %}
-			{% endfor %}
-		</ul>
-	{% endif %}
-	{% if edit_item %}
-	<form action="{{ url_for('index', item_id=edit_item.id) }}" method=POST>
-	{% else %}
-	<form action="{{ url_for('index') }}" method=POST>
-	{% endif %}
-	{% for field in form %}
-	<p>{{ field.label }} {{ field(foo='bar') }}</p>
-	{% endfor %}
-	<input type=submit value=Submit />
-	</form>
-	<h2>Planned Purchases </h2>
+<ul>
+<li ng-repeat="purchase in purchases">
+${{ purchase.price }} - {{ purchase.name }}
+</li>
+<li ng-hide="purchases.length">No purchases planned at the moment.</li>
+</ul>
+
+<div 
 	<ul>
 		<li><a href="{{ url_for('index') }}"><button class='btn'>Add a purchase.</button></a></li>
 		{% for purchase in items %}
@@ -137,6 +114,43 @@
 		<li>Nothing bought recently.</li>
 		{% endfor %}
 	</ul>
+
+
+
+
+
+	<ul>
+	<li><a href={{ url_for('index') }}>
+	<button class='btn'>Home</button></a></li>
+	<li><a href={{ url_for('index', mode='wont') }}>
+	<button class='btn btn-primary'>Won't buy something.</button></a></li>
+<li><a href={{ url_for('index', mode='bought') }}>
+	<button class='btn'>Bought something.</button></a></li>
+	</ul>
+	{% if edit_item %}
+	<h2> Modify purchase {{ edit_item.id }}</h2>
+	{% else %}
+
+	{% endif %}
+	{% if form.errors %}
+		<ul class="errors">
+			{% for field_name, field_errors in form.errors|dictsort if field_errors %}
+				{% for error in field_errors %}
+					<li>{{ form[field_name].label }}: {{ error }}</li>
+				{% endfor %}
+			{% endfor %}
+		</ul>
+	{% endif %}
+	{% if edit_item %}
+	<form action="{{ url_for('index', item_id=edit_item.id) }}" method=POST>
+	{% else %}
+	<form action="{{ url_for('index') }}" method=POST>
+	{% endif %}
+	{% for field in form %}
+	<p>{{ field.label }} {{ field(foo='bar') }}</p>
+	{% endfor %}
+	<input type=submit value=Submit />
+	</form>
 
 	<h2>Will Not Buy</h2>
 	Total saved: ${{ "{0:.2f}".format(saved) }}

@@ -20,7 +20,7 @@ function unpack($obj){
 			// Active goals
 			Restangular.all('purchase').getList(
 			{active:1, needs_work:1}).then(function (items){
-                $scope.goals = items;
+                $scope.purchases = items;
             });
 
 		}
