@@ -61,7 +61,7 @@
 ${{ purchase.price }} - {{ purchase.name }}
 <span class=btn-group>
 <button class='btn' ng-click='buy(purchase);'>Bought</button>
-<button class='btn btn-primary'>Won't Buy</button>
+<button class='btn btn-primary' ng-click='wont(purchase);'>Won't Buy</button>
 </span>
 </li>
 <li ng-hide="purchases.length">No purchases planned at the moment.</li>
@@ -80,36 +80,12 @@ ${{ purchase.price }} - {{ purchase.name }}
 <h2>Recently Bought</h2>
 <ul>
 <li ng-repeat="purchase in bought">
-${{ purchase.bought }} - {{ purchase.name }} ${{ purchase.price }}
+{{ purchase.bought }} - {{ purchase.name }} ${{ purchase.price }}
 </li>
 <li ng-hide="bought.length">Nothing bought recently.</li>
+</ul>
 
-	{% if edit_item %}
-	<h2> Modify purchase {{ edit_item.id }}</h2>
-	{% else %}
-
-	{% endif %}
-	{% if form.errors %}
-		<ul class="errors">
-			{% for field_name, field_errors in form.errors|dictsort if field_errors %}
-				{% for error in field_errors %}
-					<li>{{ form[field_name].label }}: {{ error }}</li>
-				{% endfor %}
-			{% endfor %}
-		</ul>
-	{% endif %}
-	{% if edit_item %}
-	<form action="{{ url_for('index', item_id=edit_item.id) }}" method=POST>
-	{% else %}
-	<form action="{{ url_for('index') }}" method=POST>
-	{% endif %}
-	{% for field in form %}
-	<p>{{ field.label }} {{ field(foo='bar') }}</p>
-	{% endfor %}
-	<input type=submit value=Submit />
-	</form>
-
-	<h2>Will Not Buy</h2>
+<h2>Will Not Buy</h2>
 	Total saved: ${{ "{0:.2f}".format(saved) }}
 	<ul>
 		{% for purchase in will_not_buy %}

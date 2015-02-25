@@ -52,10 +52,16 @@ function unpack($obj){
             var item = Restangular.one('purchase', purchase.id);
 			item.bought = Date();
 			item.put();
-
-			// Hide the add form.
 			$scope.get_purchases();
 		}
+
+		$scope.wont = function(purchase){
+            var item = Restangular.one('purchase', purchase.id);
+			item.resolved = Date();
+			item.put();
+			$scope.get_purchases();
+		}
+
 
 
 		// Modify a purchase
