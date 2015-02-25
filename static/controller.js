@@ -37,7 +37,6 @@ function unpack($obj){
 		// Modify a purchase with a form.
 		$scope.purchase = Restangular.one('purchase');
 
-
 		// Add a purchase...
         $scope.add_purchase = function(){
 			console.log('Scope: ');
@@ -49,19 +48,29 @@ function unpack($obj){
 		    });
         }
 
+		$scope.buy = function(purchase){
+            var item = Restangular.one('purchase', purchase.id);
+			item.bought = Date();
+			item.put();
+
+			// Hide the add form.
+			$scope.get_purchases();
+		}
+
+
 		// Modify a purchase
 		$scope.showpurchaseEdit = function(purchase){
 			$scope.purchase_edit_form = purchase.id;
 		}
 
-		$scope.updatepurhcase = function(purhcase){
-            var item = Restangular.one('purhcase', purhcase.id);
-			item = purhcase;
+		$scope.updatepurchase = function(purchase){
+            var item = Restangular.one('purchase', purchase.id);
+			item = purchase;
 			item.put();
 
 			// Hide the add form.
-		    $scope.purhcase_edit_form = null;
-			$scope.refreshGoals();
+		    $scope.purchase_edit_form = null;
+			$scope.get_purchases();
 		}
 
     });

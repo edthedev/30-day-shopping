@@ -37,16 +37,6 @@
 
 <!-- End Angular JS -->
 
-	<script>
-		// Bind a Date Picker to any control named id_completed
-		 $(function() {
-			 $( "#expected" ).datepicker();
-			 $( "#resolved" ).datepicker();
-			 $( "#expected" ).datepicker( "option", "dateFormat", "yy-mm-dd");
-			 $( "#resolved" ).datepicker( "option", "dateFormat", "yy-mm-dd");
-		 });
-	</script>
-
 </meta>
 	<title>30 Day Purchase App</title>
 </head>
@@ -70,7 +60,7 @@
 <li ng-repeat="purchase in purchases">
 ${{ purchase.price }} - {{ purchase.name }}
 <span class=btn-group>
-<button class='btn'>Bought</button>
+<button class='btn' ng-click='buy(purchase);'>Bought</button>
 <button class='btn btn-primary'>Won't Buy</button>
 </span>
 </li>
@@ -94,14 +84,6 @@ ${{ purchase.bought }} - {{ purchase.name }} ${{ purchase.price }}
 </li>
 <li ng-hide="bought.length">Nothing bought recently.</li>
 
-	<ul>
-	<li><a href={{ url_for('index') }}>
-	<button class='btn'>Home</button></a></li>
-	<li><a href={{ url_for('index', mode='wont') }}>
-	<button class='btn btn-primary'>Won't buy something.</button></a></li>
-<li><a href={{ url_for('index', mode='bought') }}>
-	<button class='btn'>Bought something.</button></a></li>
-	</ul>
 	{% if edit_item %}
 	<h2> Modify purchase {{ edit_item.id }}</h2>
 	{% else %}
