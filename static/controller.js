@@ -17,15 +17,9 @@ function unpack($obj){
 
 		$scope.get_savings = function(){
 			var query = '{"functions":[{"name":"sum", "field":"price"}]}';
-			var query = '{"functions":[{"name":"sum", "field":"price"}]}';
 			$http.get('/api/eval/purchase?q=' + query).success(
 				function(data, status, headers, config) {
-					console.log('result');
-					console.log(data);
-					// $scope.saved = items['sum__price'];
-					// console.log($scope.saved);
-			      // this callback will be called asynchronously
-				  //     // when the response is available
+					$scope.saved = data['sum__price'];
 			    });
 		}
         $scope.get_savings();
