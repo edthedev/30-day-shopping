@@ -47,7 +47,7 @@ function unpack($obj){
 			var query = '{"filters":[{"name":"bought","op":"neq","val":true}]}';
 			Restangular.all('purchase').getList(
 				{'q':query}).then(function (items){
-                $scope.wont = items;
+                $scope.no_buy = items;
             });
 
 
