@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="ctrl">
+<head>
+<meta charset="UTF-8">
+
+	<!-- Don't suck at default zoom level. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+
+    <!-- JQuery for JQueryUI and Bootstrap-->
+	<script src="static/node_modules/jquery/dist/jquery.js"></script>
+
+    <!-- Boostrap -->
+	<link href="static/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="static/node_modules/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
+
+	<script src="static/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
+	<!-- Base app css -->
+	<link href="static/base.css" rel="stylesheet">
+
+	<!-- JQuery UI -->
+	<link href="static/node_modules/jquery-ui/jquery-ui.js" rel="stylesheet">
+
+<!-- Start Angular JS -->
+	<script src=
+		"static/node_modules/angular/angular.js"></script>
+
+	<script src="static/node_modules/lodash/index.js"></script> 
+
+	<script src= "static/node_modules/restangular/src/restangular.js"></script>
+
+	<!-- My Angular JS Controller -->
+	<script src="static/controller.js"></script>
+
+<!-- End Angular JS -->
+
+<title>30 Day Purchase App</title>
+</head>
+<body>
+
+<h2> Add a purchase </h2>
+<form novalidate class="simple-form">
+	<label for=name>Item:</label>
+	<input id=name type="text" ng-model="purchase.name" /> 
+	<label for=price>Price: </label>
+	<input id=price type="text" ng-model="purchase.price" /> 
+	<span class="btn-group">
+	<input class="btn btn-mini" 
+		type="submit" ng-click="add_purchase()" value="Add" />
+</span>
+</form>
+
+<h2>Planned Purchases </h2>
+<ul>
+<li ng-repeat="purchase in purchases">
+${{ purchase.price }} - {{ purchase.name }}
+<span class=btn-group>
+<button class='btn' ng-click='buy(purchase);'>Bought</button>
+<button class='btn btn-primary' ng-click='wont(purchase);'>Won't Buy</button>
+</span>
+</li>
+<li ng-hide="purchases.length">No purchases planned at the moment.</li>
+</ul>
+
+<h2>Expected Monthly Costs</h2>
+	<ul>
+	{% for month, cost in sums.iteritems() %}
+	<li>
+	{{ month }} - Total: ${{ "{0:.2f}".format(cost) }} - Avg. Daily: ${{ "{0:.2f}".format(averages[month]) }} 
+	</li>
+	{% else %}
+		No sums...
+	{% endfor %}
+	</ul>
+<h2>Recently Bought</h2>
+<ul>
+<li ng-repeat="purchase in bought">
+{{ purchase.done }} - {{ purchase.name }} ${{ purchase.price }}
+</li>
+<li ng-hide="bought.length">Nothing bought recently.</li>
+</ul>
+
+<h2>Will Not Buy</h2>
+Total saved: ${{ saved }}
+	<ul>
+		<li ng-repeat="purchase in wont">
+		{{ purchase.done }} - {{ purchase.name }} ${{ purchase.price }}
+		</li>
+		<li ng-hide="wont.length">No purchases skipped yet.</li>
+	</ul>
+
+</body>
+</html>

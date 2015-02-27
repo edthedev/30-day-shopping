@@ -1,0 +1,5 @@
+
+
+Bug: EVE is STILL not finding shopping2.db.
+Steps: Open http://127.0.0.1:5000/api/purchase?active=1&needs_work=1
+

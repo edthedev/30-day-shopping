@@ -1,4 +1,2 @@
-flask
-peewee
-wtforms
-wtf-peewee
+SQLAlchemy
+flask-restless
