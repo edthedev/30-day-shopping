@@ -144,4 +144,5 @@ def athingisdone(thepath):
 # Start the app
 # -----------------------------------
 _LOGGER.debug('about to start')
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
