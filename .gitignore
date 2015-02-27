@@ -1,4 +1,4 @@
 ve
-shopping.db
+*.db
 *.pyc
 *.log
