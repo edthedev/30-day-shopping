@@ -16,9 +16,11 @@ function unpack($obj){
         Restangular.addResponseInterceptor(unpack);
 
 		$scope.get_savings = function(){
-			var query = '{"functions":[{"name":"sum", "field":"price"}]}';
+			var query = '{"functions":[{"name":"sum", "field":"price"}],"filters":[{"name":"bought","op":"neq","val":true}]}';
+
 			$http.get('/api/eval/purchase?q=' + query).success(
 				function(data, status, headers, config) {
+					console.log(data);
 					$scope.saved = data['sum__price'];
 			    });
 		}
