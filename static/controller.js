@@ -25,12 +25,24 @@ function unpack($obj){
 			    });
 		}
         $scope.get_savings();
+		$scope.purchase_page = 1;
+
+		$scope.get_next_purchases = function(){
+			$scope.purchase_page += 1;
+			$scope.get_purchases();
+		}
+
+		$scope.get_prev_purchases = function(){
+			$scope.purchase_page -= 1;
+			$scope.get_purchases();
+		}
+
 		
         $scope.get_purchases = function(){
 
 			var query = '{"filters":[{"name":"done","op":"is_null"}]}';
 			Restangular.all('purchase').getList(
-				{'q':query}).then(function (items){
+				{'page':$scope.purchase_page, 'q':query}).then(function (items){
                 $scope.purchases = items;
             });
 

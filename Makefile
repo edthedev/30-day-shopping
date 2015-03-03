@@ -42,3 +42,20 @@ explore_db:
 
 postman:
 	open chrome://apps/
+
+########################################
+#  Data tasks
+########################################
+HOSTNAME=ansible-chicago-apps
+APP=shopping
+
+# alter_table:
+	# sqlite3 goals.db "alter table action add 'done' boolean default false;"
+
+backup_database:
+	ansible $(HOSTNAME) -m fetch -a "flat=yes dest=./$(APP).db src=/var/www/$(APP)/$(APP).db"
+
+upload_database:
+	ansible $(HOSTNAME) -m copy -a "backup=True src=./$(APP).db dest=/var/www/$(APP)/$(APP).db"
+
+
