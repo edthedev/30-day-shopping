@@ -1,33 +1,87 @@
+''' Shop slowly - add items to this web app.
+See if you still want them 30 days later.
+
+Also meant to serve as a light weight example using Python and NodeJS.
+
+- Sqlalchemy describes and creates the database.
+- Flask-Restless provides the API
+and (in local development mode) serves the main index.html file.
+- AngularJS provides the user experience, and sends data updates to the Eve API.
+
+-----------------------------------
+License:
+
+Copyright 2014 Edward Delaporte
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-----------------------------------
+
+'''
+__author__ = 'Edward Delaporte edthedev@gmail.com'
+
+# -----------------------------------
+# Imports
+# -----------------------------------
+
+# Python native imports
 import os
-
-PROJECT_ROOT = os.path.dirname(__file__)
-_LOG_FILE = os.path.join(PROJECT_ROOT, 'shopping.log')
-_DATABASE_FILE = os.path.join(PROJECT_ROOT, 'shopping.db')
-# sys.path.insert(0, PROJECT_ROOT)
-
 import logging
+from datetime import timedelta
+
+# -----------------------------------
+# Constants
+# -----------------------------------
+APP_ROOT = os.path.dirname(__file__)
+_APP_NAME = 'shopping'
+
+# -----------------------------------
+# Logging
+# -----------------------------------
+_LOG_FILE = os.path.join(APP_ROOT, _APP_NAME + '.log')
 logging.basicConfig(filename=_LOG_FILE, level=logging.DEBUG)
 _LOGGER = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
+_LOGGER.addHandler(stream_handler)
+_LOGGER.error('start')
 
-# DATABASE
-#-----------
-from datetime import datetime, timedelta
-from peewee import Model, SqliteDatabase
-from peewee import CharField, DateField, BooleanField, DecimalField
-from peewee import OperationalError
+# -----------------------------------
+# Flask App
+# -----------------------------------
+import flask
+import flask.ext.sqlalchemy
+import flask.ext.restless
 
-db = SqliteDatabase(_DATABASE_FILE)
+app = flask.Flask(__name__)
+app.config['DEBUG'] = True
 
-class Purchase(Model):
-    added = DateField(default=datetime.now)
-    name = CharField()
-    price = DecimalField(null=True, default=lambda: 0)
-    expected = DateField(null=True)
-    bought = BooleanField(null=True)
-    resolved = DateField(null=True)
+# -----------------------------------
+# Database models.
+# -----------------------------------
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shopping.db'
+db = flask.ext.sqlalchemy.SQLAlchemy(app)
 
-    class Meta:
-        database = db
+class Purchase(db.Model):
+    __tablename__ = 'purchase'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255))
+    price = db.Column(db.Float(precision=2))
+    bought = db.Column(db.Boolean)
+    done = db.Column(db.DateTime)
+    expected = db.Column(db.DateTime)
+
+#    class Meta:
+#        database = db
 
     def __repr__(self):
         _data = self.__dict__['_data']
@@ -44,128 +98,51 @@ class Purchase(Model):
                 self.expected = self.added + timedelta(days=30)
         super(Purchase, self).save()
 
-# Add the schema if it doesn't already exist.
-try:
-    db.create_tables([Purchase])
-    _LOGGER.info('Created tables...')
-except OperationalError:
-    _LOGGER.info('Skipping table creation...')
-
-# Web forms
-# ------------
-from wtfpeewee.orm import model_form
-PurchaseForm = model_form(Purchase,
-        exclude=('added', 'expected', 'bought', 'resolved'))
-FullPurchaseForm = model_form(Purchase,
-        exclude=('added'))
-
-PurchaseForm.csrf = True
-
-# Web app
-#----------
-
-from flask import Flask, render_template, request, redirect, url_for
-app = Flask(__name__)
+# Base.metadata.create_all(engine)
+# Purchase.metadata.create_all(engine)
+_LOGGER.debug('finished creating db')
 
 
-@app.route('/wont/<int:item_id>', methods=['POST'])
-def wont(item_id):
-    purchase = Purchase.get(Purchase.id==item_id)
-    purchase.resolved = datetime.now()
-    purchase.bought = False
-    purchase.save()
-    return redirect(url_for('index'))
+# Create the database tables.
+db.create_all()
 
-@app.route('/bought/<int:item_id>', methods=['POST'])
-def bought(item_id):
-    purchase = Purchase.get(Purchase.id==item_id)
-    purchase.resolved = datetime.now()
-    purchase.bought = True
-    purchase.save()
-    return redirect(url_for('index'))
+# -----------------------------------
+# All about the app.
+# This is a Flask app and an Eve app.
+# (Eve app is a subclass of Flask app)
+# -----------------------------------
+# -----------------------------------
+# API
+# -----------------------------------
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
-@app.route('/mode/<string:mode>', methods=['GET'])
-def index(item_id=None, mode=None):
-    kwargs = {}
-    form = PurchaseForm()
-    kwargs['debug'] = 'Monkey!'
-    kwargs['mode'] = mode
+# Create the Flask-Restless API manager.
+manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 
-    purchase = Purchase()
+# Create API endpoints, which will be available at /api/<tablename> by
+# default. Allowed HTTP methods can be specified as well.
+manager.create_api(Purchase,
+        methods=['GET', 'PUT', 'POST', 'DELETE'],
+        allow_functions=True,
+        )
 
-    # Add form 
-    form = PurchaseForm(request.form, obj=purchase)
+# -----------------------------------
+# Other pages
+# -----------------------------------
+from flask import send_from_directory
+@app.route('/', methods=['GET'])
+def index():
+    _LOGGER.error('Index?')
+    return send_from_directory(
+        os.path.join(APP_ROOT), 'index.html')
 
-    # Maybe edit an item
-    if item_id:
-        kwargs['debug'] = 'Editing item {}'.format(item_id)
-        purchase = Purchase.get(Purchase.id==item_id)
-        kwargs['edit_item'] = purchase
-        # Edit form...
-        form = FullPurchaseForm(request.form, obj=purchase)
+@app.route('/static/<path:thepath>')
+def athingisdone(thepath):
+    _LOGGER.error('Got a request for %s', thepath)
+    return send_from_directory( os.path.join(APP_ROOT, 'static'), thepath)
 
-    # Maybe add an item.
-    if request.method == 'POST':
-        if form.validate():
-            form.populate_obj(purchase)
-            purchase.save()
-            # Now display a blank form.
-            # form = PurchaseForm()
-
-            kwargs['debug'] = 'Saved'
-            # Don't leave us on POST...nicer to refresh button...
-            return redirect(url_for('index'))
-        else:
-            kwargs['debug'] = 'Invalid POST'
-
-    # Show add form and previously added items.
-    kwargs['form'] = form
-    items = Purchase.select().where(
-                    Purchase.resolved==None).order_by(Purchase.expected)
-    kwargs['items'] = items
-
-    # Sum purchases by month...
-    sums = {}
-    averages = {}
-
-    from collections import defaultdict
-    sums = defaultdict(lambda:0, sums)
-    for item in items:
-        month_name = item.expected.strftime('%B')
-        if item.price:
-            sums[month_name] += item.price
-
-    # will not buy 
-    kwargs['will_not_buy'] = \
-            Purchase.select().where(
-                    Purchase.resolved!=None,
-                    Purchase.bought==False).order_by(Purchase.resolved)
-    # bought...
-    bought_items = \
-            Purchase.select().where(
-                    Purchase.resolved!=None,
-                    Purchase.bought==True).order_by(Purchase.resolved)
-    kwargs['recently_bought'] = bought_items
-
-    # Include bought items in sums...
-    for item in bought_items:
-        month_name = item.expected.strftime('%B')
-        sums[month_name] += item.price
-
-    for month_name in sums:
-        averages[month_name] = sums[month_name] / 30
-
-    kwargs['sums'] = sums
-    kwargs['averages'] = averages
-
-    kwargs['saved'] = 0
-    for item in kwargs['will_not_buy']:
-        kwargs['saved'] += item.price
-    return render_template('template.html', **kwargs)
-
+# -----------------------------------
+# Start the app
+# -----------------------------------
+_LOGGER.debug('about to start')
 if __name__ == '__main__':
-    app.debug = True
-    application = app
-    application.run()
+    app.run(debug=True)
