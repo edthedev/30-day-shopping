@@ -40,9 +40,9 @@ function unpack($obj){
 		
         $scope.get_purchases = function(){
 
-			var query = '{"page":' + $scope.purchase_page + ',"filters":[{"name":"done","op":"is_null"}]}';
+			var query = '{"filters":[{"name":"done","op":"is_null"}]}';
 			Restangular.all('purchase').getList(
-				{'q':query}).then(function (items){
+				{'page':$scope.purchase_page, 'q':query}).then(function (items){
                 $scope.purchases = items;
             });
 
