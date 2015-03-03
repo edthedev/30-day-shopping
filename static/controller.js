@@ -25,6 +25,15 @@ function unpack($obj){
 			    });
 		}
         $scope.get_savings();
+
+		$scope.get_next_purchases = function(page){
+// TODO: Use the variable here...
+			var query = '{page=2, "filters":[{"name":"done","op":"is_null"}]}';
+			Restangular.all('purchase').getList(
+				{'q':query}).then(function (items){
+                $scope.purchases = items;
+            });
+		}
 		
         $scope.get_purchases = function(){
 
