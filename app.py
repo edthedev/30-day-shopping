@@ -100,11 +100,11 @@ class Purchase(db.Model):
 
 # Base.metadata.create_all(engine)
 # Purchase.metadata.create_all(engine)
-_LOGGER.debug('finished creating db')
 
 
 # Create the database tables.
 db.create_all()
+_LOGGER.debug('finished creating db')
 
 # -----------------------------------
 # All about the app.
