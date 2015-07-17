@@ -6,13 +6,16 @@ VPIP=$(VENV)/bin/pip
 ########################################
 #  Development Tasks
 ########################################
+bower_reqs:
+	bower install
+
 venv:
 	virtualenv $(VENV)
 
 requirements:
 	$(VPIP) install -r $(BASEDIR)/requirements.txt
 
-setup: venv requirements
+setup: venv requirements bower_rews
 
 checkin_all_the_things:
 	cd $(BASEDIR); git commit -a -m "CHECKIN ALL THE THINGS!!1!"
