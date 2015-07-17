@@ -6,6 +6,11 @@ VPIP=$(VENV)/bin/pip
 ########################################
 #  Development Tasks
 ########################################
+.PHONY: static
+
+static:
+	jsx -w jsx/ static/
+
 bower_reqs:
 	bower install
 
