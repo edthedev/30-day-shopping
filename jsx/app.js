@@ -29,7 +29,7 @@ var Purchase = React.createClass({
 	this.updateAction({'when':null});
   },
   render: function() {
-		var buttons = <span><button className='btn btn-done' onClick={this.doneAction}>Done</button> <button className='btn btn-danger' onClick={this.laterAction}>Later</button> <button className='btn' onClick={this.tomorrowAction}>Tomorrow</button> <button className='btn' onClick={this.in2days}>+2 Days</button> <button className='btn' onClick={this.in3days}>+3 Days</button></span>;
+		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
 		if(this.props.done)
 		{
@@ -70,10 +70,12 @@ var Planned = React.createClass({
 				return (<Purchase key={item.id} name={item.name} obj={item}/>);
 			});
 		return (
+			<div>
+			<h3>Plan to Buy</h3>
 			<ul>
-			What happen? We get signal. 
 			{rows}
 			</ul>
+			</div>
 		);
 	}
 });

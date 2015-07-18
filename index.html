@@ -28,12 +28,8 @@
 </head>
 <body>
 
-
-	<div id=content>Hello React.</div>
+	<div id=content>Oh no, React.js did not load!</div>
 	<script src="static/app.js"></script>
-
-
-	<h1> Old stuff </h1>
 
 <h2> Add a purchase </h2>
 <form novalidate class="simple-form">
@@ -46,21 +42,6 @@
 		type="submit" ng-click="add_purchase()" value="Add" />
 </span>
 </form>
-
-<h2>Planned Purchases </h2>
-<button class=btn ng-click="get_prev_purchases();">Prev</button>
-Page {{ purchase_page }}.
-<button class=btn ng-click="get_next_purchases();">Next</button>
-<ul>
-<li ng-repeat="purchase in purchases">
-${{ purchase.price }} - {{ purchase.name }}
-<span class=btn-group>
-<button class='btn' ng-click='buy(purchase);'>Bought</button>
-<button class='btn btn-primary' ng-click='wont(purchase);'>Won't Buy</button>
-</span>
-</li>
-<li ng-hide="purchases.length">No purchases planned at the moment.</li>
-</ul>
 
 <h2>Expected Monthly Costs</h2>
 	<ul>
