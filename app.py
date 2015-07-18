@@ -68,7 +68,8 @@ app.config['DEBUG'] = True
 # -----------------------------------
 # Database models.
 # -----------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shopping.db'
+DB_CONN = 'sqlite:///shopping.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONN
 db = flask.ext.sqlalchemy.SQLAlchemy(app)
 
 class Purchase(db.Model):
@@ -83,9 +84,9 @@ class Purchase(db.Model):
 #    class Meta:
 #        database = db
 
-    def __repr__(self):
-        _data = self.__dict__['_data']
-        return "{expected} - {name} ${price}".format(**_data)
+    #def __repr__(self):
+    #    _data = self.__dict__['_data']
+    #    return "{expected} - {name} ${price}".format(**_data)
 
     def save(self):
         ''' Add default behavior for expected purchase date. '''
@@ -125,6 +126,11 @@ manager.create_api(Purchase,
         allow_functions=True,
         )
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+engine = create_engine(DB_CONN)
+Session = sessionmaker(bind=engine)
+
 # -----------------------------------
 # Other pages
 # -----------------------------------
@@ -134,6 +140,17 @@ def index():
     _LOGGER.error('Index?')
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
+
+
+from flask import jsonify
+@app.route('/api2/planned', methods=['GET'])
+def planned():
+    session = Session()
+    results = session.query(Purchase).filter(Purchase.bought == False).all()
+    # results = session.query(Purchase).all()
+    _LOGGER.debug(results)
+    stuff = []
+    return jsonify(results=stuff)
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
