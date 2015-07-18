@@ -1,6 +1,11 @@
 
 var api = restful(window.location.host + '/api');
 
+function unpack($obj){
+    console.log($obj);
+    return $obj['objects'];
+}
+
 var Purchase = React.createClass({
   update: function(updates) {
 	id = this.props.id;
@@ -44,6 +49,9 @@ var Planned = React.createClass({
   ref_me: function() {
 	api.all('purchase').getAll().then( function(response) {
 		console.log('refreshed!');
+		var item = response.body();
+		var data = item.data();
+        this.setState({data: unpack(data)});
 	});
   },
   componentDidMount: function() {
