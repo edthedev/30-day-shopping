@@ -146,11 +146,12 @@ from flask import jsonify
 @app.route('/api2/planned', methods=['GET'])
 def planned():
     session = Session()
-    results = session.query(Purchase).filter(Purchase.bought == False).all()
-    # results = session.query(Purchase).all()
-    _LOGGER.debug(results)
-    stuff = []
-    return jsonify(results=stuff)
+    data = session.query(Purchase).filter(Purchase.bought == False).all()
+    # Remove ORM cruft:
+    _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
+    result = [d.__dict__ for d in data]
+    _LOGGER.debug(result)
+    return jsonify(json_list=result)
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
