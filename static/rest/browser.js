@@ -8,7 +8,7 @@
 (function (define) {
 	'use strict';
 
-	define(function (require) {
+	define(function (require, module) {
 
 		var rest = require('./client/default'),
 		    browser = require('./client/xhr');

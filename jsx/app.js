@@ -46,16 +46,20 @@ var Planned = React.createClass({
   }, 
   ref_me: function() {
 	console.log('called refreshed!');
-	this.setState({data: ['an item']});
+	$.get('api/purchase', function(response)
+		{
+			if(this.isMounted()){
+				this.setState({data: ['an item', 'a second item']});
+			}
+		}.bind(this));
   },
   componentDidMount: function() {
 	console.log('called compdidmount!');
-	// this.setState({data: this.ref_me()});
 	this.ref_me();
   },
 	render: function(){
 		console.log('called render!');
-		console.log('state');
+		console.log('state:');
 		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
 				return (<Purchase id='1' name='Ralph' />);
