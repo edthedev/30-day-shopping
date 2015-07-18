@@ -5,9 +5,6 @@ function unpack($obj){
 }
 
 var Purchase = React.createClass({
-  getInitialState: function() {
-    return {obj: []};
-  }, 
   update: function(updates) {
 	id = this.props.id;
 	ref_method = this.props.ref_method;
@@ -37,7 +34,7 @@ var Purchase = React.createClass({
 		}
 
 		return (
-			<li> {this.props.name} {buttons}
+			<li> ${this.props.obj.price} - {this.props.obj.name} {buttons}
 			</li>
 		);
   }
