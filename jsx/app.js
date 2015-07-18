@@ -49,17 +49,27 @@ var Planned = React.createClass({
   ref_me: function() {
 	api.all('purchase').getAll().then( function(response) {
 		console.log('refreshed!');
+        this.setState({data: response});
 		var item = response.body();
+		console.log('response');
+		console.log(response.body());
 		var data = item.data();
-        this.setState({data: unpack(data)});
+		console.log('data');
+		console.log(data);
 	});
   },
   componentDidMount: function() {
 	this.ref_me();
   },
 	render: function(){
+		var rows = this.state.data.map(function (item) {
+				return (<Purchase id='1' name='Ralph' />);
+			});
 		return (
-			<Purchase id='1' name='Ralph' />
+			<ul>
+			Hello monkey.
+			{rows}
+			</ul>
 		);
 	}
 });
