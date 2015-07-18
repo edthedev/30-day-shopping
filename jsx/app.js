@@ -64,7 +64,7 @@ var Planned = React.createClass({
 		console.log('state:');
 		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
-				return (<Purchase id='1' name='Ralph' />);
+				return (<Purchase id={item.id} name={item.name} />);
 			});
 		return (
 			<ul>
