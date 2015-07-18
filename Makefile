@@ -35,7 +35,7 @@ open:
 	open http://127.0.0.1:5000/
 
 edit:
-	vim app.py index.html static/controller.js
+	vim app.py index.html jsx/app.js
 
 static_files:
 	# Lodash is required by restangular
