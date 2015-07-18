@@ -6,24 +6,24 @@ function unpack($obj){
 
 var Purchase = React.createClass({
   update: function(updates) {
-	id = this.props.id;
-	ref_method = this.props.ref_method;
-	api.one('purchase', id).get().then( function(response) {
-		var item = response.body();
-		var data = item.data();
-		for(var prop in updates)
-		{
-			data[prop] = updates[prop];
+	id = this.props.obj.id;
+    data = this.props.obj;
+	for(var prop in updates)
+	{
+		data[prop] = updates[prop];
+	}
+	$.ajax({
+		url: 'api/purchase/' + id,
+		type: 'PUT',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		success: function(result) {
+			console.log('PUT! SUCCESS!');
 		}
-		item.save().then( function () { 
-			ref_method();
-		} );
-	  });
-
+	});
   },
-  laterAction: function() {
-	console.log('clicked later');
-	this.updateAction({'when':null});
+  buy: function() {
+	this.update({'bought':true});
   },
   render: function() {
 		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
@@ -46,7 +46,7 @@ var Planned = React.createClass({
   }, 
   ref_me: function() {
 	console.log('called refreshed!');
-	$.get('api/purchase', function(response)
+	$.get('api2/planned', function(response)
 		{
 			data = unpack(response);
 			console.log(data);

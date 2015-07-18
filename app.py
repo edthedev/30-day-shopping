@@ -151,7 +151,7 @@ def planned():
     _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
     result = [d.__dict__ for d in data]
     _LOGGER.debug(result)
-    return jsonify(json_list=result)
+    return jsonify(objects=result)
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
