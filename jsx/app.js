@@ -2,7 +2,7 @@
 var api = restful(window.location.host + '/api');
 
 function unpack($obj){
-    console.log($obj);
+//    console.log($obj);
     return $obj['objects'];
 }
 
@@ -47,18 +47,27 @@ var Planned = React.createClass({
     return {data: []};
   }, 
   ref_me: function() {
+	console.log('called refreshed!');
+	var stuff = [];
 	api.all('purchase').getAll().then( function(response) {
 		var items = response.body();
-		console.log('refreshed!');
-        this.setState({data: items});
+		stuff = unpack(items());
+		console.log('stuff');
+		console.log(stuff);
+        // setst({data: stuff});
 		// TODO: this bit never happens.
-		console.log('set state.');
+		Planned.setState({data:stuff});
 	});
   },
   componentDidMount: function() {
+	console.log('called compdidmount!');
+	// this.setState({data: this.ref_me()});
 	this.ref_me();
   },
 	render: function(){
+		console.log('called render!');
+		this.ref_me();
+		console.log('state');
 		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
 				return (<Purchase id='1' name='Ralph' />);
