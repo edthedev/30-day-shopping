@@ -1,6 +1,4 @@
 
-var api = restful(window.location.host + '/api');
-
 function unpack($obj){
 //    console.log($obj);
     return $obj['objects'];
@@ -48,16 +46,7 @@ var Planned = React.createClass({
   }, 
   ref_me: function() {
 	console.log('called refreshed!');
-	var stuff = [];
-	api.all('purchase').getAll().then( function(response) {
-		var items = response.body();
-		stuff = unpack(items);
-		console.log('got this stuff:');
-		console.log(stuff);
-        // setst({data: stuff});
-		// TODO: this bit never happens.
-		Planned.setState({data:stuff});
-	});
+	this.setState({data: ['an item']});
   },
   componentDidMount: function() {
 	console.log('called compdidmount!');
@@ -66,7 +55,6 @@ var Planned = React.createClass({
   },
 	render: function(){
 		console.log('called render!');
-		this.ref_me();
 		console.log('state');
 		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
