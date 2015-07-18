@@ -48,8 +48,10 @@ var Planned = React.createClass({
 	console.log('called refreshed!');
 	$.get('api/purchase', function(response)
 		{
+			data = unpack(response);
+			console.log(data);
 			if(this.isMounted()){
-				this.setState({data: ['an item', 'a second item']});
+				this.setState({data: data});
 			}
 		}.bind(this));
   },
@@ -66,7 +68,7 @@ var Planned = React.createClass({
 			});
 		return (
 			<ul>
-			Hello monkey.
+			What happen? We get signal. 
 			{rows}
 			</ul>
 		);
