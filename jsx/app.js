@@ -5,6 +5,9 @@ function unpack($obj){
 }
 
 var Purchase = React.createClass({
+  getInitialState: function() {
+    return {obj: []};
+  }, 
   update: function(updates) {
 	id = this.props.id;
 	ref_method = this.props.ref_method;
@@ -64,7 +67,7 @@ var Planned = React.createClass({
 		console.log('state:');
 		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
-				return (<Purchase id={item.id} name={item.name} />);
+				return (<Purchase key={item.id} name={item.name} obj={item}/>);
 			});
 		return (
 			<ul>
