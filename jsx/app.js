@@ -1,5 +1,5 @@
 
-var api = restful('api');
+var api = restful(window.location.host + '/api');
 
 var Purchase = React.createClass({
   update: function(updates) {
@@ -42,7 +42,9 @@ var Planned = React.createClass({
     return {data: []};
   }, 
   ref_me: function() {
-	console.log('refreshed!');
+	api.all('purchase').getAll().then( function(response) {
+		console.log('refreshed!');
+	});
   },
   componentDidMount: function() {
 	this.ref_me();
