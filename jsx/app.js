@@ -51,8 +51,8 @@ var Planned = React.createClass({
 	var stuff = [];
 	api.all('purchase').getAll().then( function(response) {
 		var items = response.body();
-		stuff = unpack(items());
-		console.log('stuff');
+		stuff = unpack(items);
+		console.log('got this stuff:');
 		console.log(stuff);
         // setst({data: stuff});
 		// TODO: this bit never happens.
