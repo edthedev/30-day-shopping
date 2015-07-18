@@ -48,20 +48,18 @@ var Planned = React.createClass({
   }, 
   ref_me: function() {
 	api.all('purchase').getAll().then( function(response) {
+		var items = response.body();
 		console.log('refreshed!');
-        this.setState({data: response});
-		var item = response.body();
-		console.log('response');
-		console.log(response.body());
-		var data = item.data();
-		console.log('data');
-		console.log(data);
+        this.setState({data: items});
+		// TODO: this bit never happens.
+		console.log('set state.');
 	});
   },
   componentDidMount: function() {
 	this.ref_me();
   },
 	render: function(){
+		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
 				return (<Purchase id='1' name='Ralph' />);
 			});
