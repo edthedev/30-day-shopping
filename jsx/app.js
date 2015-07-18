@@ -37,7 +37,16 @@ var Purchase = React.createClass({
   }
 });
 
-var PurchaseList = React.createClass({
+var Planned = React.createClass({
+  getInitialState: function() {
+    return {data: []};
+  }, 
+  ref_me: function() {
+	console.log('refreshed!');
+  },
+  componentDidMount: function() {
+	this.ref_me();
+  },
 	render: function(){
 		return (
 			<Purchase id='1' name='Ralph' />
@@ -47,7 +56,7 @@ var PurchaseList = React.createClass({
 
 React.render(
   <div>
-  <PurchaseList />
+  <Planned />
   </div>,
   document.getElementById('content')
 );
