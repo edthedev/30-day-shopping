@@ -155,11 +155,44 @@ var Recent = React.createClass({
 	}
 });
 
+var Saved = React.createClass({
+  getInitialState: function() {
+    return {data: [], saved: 0};
+  }, 
+  ref_me: function() {
+	$.get('api2/nobuy', function(response)
+		{
+			data = unpack(response);
+			if(this.isMounted()){
+				this.setState({data: data});
+			}
+		}.bind(this));
+  },
+  componentDidMount: function() {
+	this.ref_me();
+  },
+	render: function(){
+		var rows = this.state.data.map(function (item) {
+				return (<Purchase key={item.id} name={item.name} obj={item}/>);
+			});
+		return (
+			<div>
+			<h3>Will not buy.</h3>
+			<p>${this.state.saved} saved!</p>
+			<ul>
+			{rows}
+			{(rows.length==0)&&(<li>Nothing skipped yet.</li>)}
+			</ul>
+			</div>
+		);
+	}
+});
 
 React.render(
   <div>
   <Planned />
   <Recent />
+  <Saved />
   </div>,
   document.getElementById('content')
 );

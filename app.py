@@ -164,6 +164,12 @@ def recent():
     data = session.query(Purchase).filter(Purchase.bought == True).order_by(Purchase.done).limit(10).all()
     return _return(data)
 
+@app.route('/api2/nobuy', methods=['GET'])
+def nobuy():
+    session = Session()
+    data = session.query(Purchase).filter(Purchase.bought == False, Purchase.done != None).order_by(Purchase.done).limit(10).all()
+    return _return(data)
+
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
     _LOGGER.error('Got a request for %s', thepath)
