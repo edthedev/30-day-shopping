@@ -47,6 +47,29 @@ var Purchase = React.createClass({
   }
 });
 
+var PurchaseForm = React.createClass({
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var name = React.findDOMNode(this.refs.name).value.trim();
+    var price = React.findDOMNode(this.refs.price).value.trim();
+    if (!price || !name) {
+      return;
+    }
+    this.props.onpurchaseSubmit({name: name, price: price});
+    React.findDOMNode(this.refs.name).value = '';
+    React.findDOMNode(this.refs.price).value = '';
+  },
+  render: function() {
+    return (
+      <form className="purchaseForm" onSubmit={this.handleSubmit}>
+        <input type="price" placeholder="Item name" ref="name" />
+        $<input type="price" placeholder="20" ref="price" />
+        <input type="submit" value="Post" />
+      </form>
+    );
+  }
+});
+
 var Planned = React.createClass({
   getInitialState: function() {
     return {data: []};
