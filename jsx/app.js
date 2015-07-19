@@ -121,9 +121,48 @@ var Planned = React.createClass({
 	}
 });
 
+var Recent = React.createClass({
+  getInitialState: function() {
+    return {data: []};
+  }, 
+  ref_me: function() {
+	console.log('called refreshed!');
+	$.get('api2/recent', function(response)
+		{
+			data = unpack(response);
+			console.log(data);
+			if(this.isMounted()){
+				this.setState({data: data});
+			}
+		}.bind(this));
+  },
+  componentDidMount: function() {
+	console.log('called compdidmount!');
+	this.ref_me();
+  },
+	render: function(){
+		console.log('called render!');
+		console.log('state:');
+		console.log(this.state);
+		var rows = this.state.data.map(function (item) {
+				return (<Purchase key={item.id} name={item.name} obj={item}/>);
+			});
+		return (
+			<div>
+			<h3>Recently Bought</h3>
+			<ul>
+			{rows}
+			</ul>
+			</div>
+		);
+	}
+});
+
+
 React.render(
   <div>
   <Planned />
+  <Recent />
   </div>,
   document.getElementById('content')
 );
