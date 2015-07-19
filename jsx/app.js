@@ -95,7 +95,17 @@ var Planned = React.createClass({
 			<ul>
 			{rows}
 			</ul>
+			<h2>Plan Another Purchase</h2>
+			<form novalidate class="simple-form">
+			<label for='name'>Item:</label>
+			<input id='name' type="text" /> 
+			<label for='price'>Price: </label>
+			<input id='price' type="text" /> 
+			<span className="btn-group">
 			<button onClick={this.add}>Add Test Record</button>
+			</span>
+</form>
+
 			</div>
 		);
 	}
