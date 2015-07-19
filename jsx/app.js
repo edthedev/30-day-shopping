@@ -126,18 +126,15 @@ var Recent = React.createClass({
     return {data: []};
   }, 
   ref_me: function() {
-	console.log('called refreshed!');
 	$.get('api2/recent', function(response)
 		{
 			data = unpack(response);
-			console.log(data);
 			if(this.isMounted()){
 				this.setState({data: data});
 			}
 		}.bind(this));
   },
   componentDidMount: function() {
-	console.log('called compdidmount!');
 	this.ref_me();
   },
 	render: function(){
