@@ -4,14 +4,15 @@ See if you still want them 30 days later.
 Also meant to serve as a light weight example using Python and NodeJS.
 
 - Sqlalchemy describes and creates the database.
-- Flask-Restless provides the API
-and (in local development mode) serves the main index.html file.
-- AngularJS provides the user experience, and sends data updates to the Eve API.
+- Flask serves web pages and a couple APIs: api is stock REST, api2 is custom.
+    (api2 is just a way to make the JavaScript .GET calls much simpler.)
+- JQuery updates and fetches data from the API.
+- React.js displays data fetched from the API.
 
 -----------------------------------
 License:
 
-Copyright 2014 Edward Delaporte
+Copyright 2015 Edward Delaporte
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
