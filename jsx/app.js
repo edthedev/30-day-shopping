@@ -3,6 +3,7 @@ function unpack($obj){
 //    console.log($obj);
     return $obj['objects'];
 }
+var today = moment().startOf('day');
 
 var Purchase = React.createClass({
   update: function(updates) {
@@ -12,6 +13,9 @@ var Purchase = React.createClass({
 	{
 		data[prop] = updates[prop];
 	}
+	data['done'] = today.toISOString();
+	console.log('data to PUT');
+	console.log(data);
 	$.ajax({
 		url: 'api/purchase/' + id,
 		type: 'PUT',
@@ -22,11 +26,14 @@ var Purchase = React.createClass({
 		}
 	});
   },
+  add: function() {
+	this.update({'name':'test1', 'price':5});
+  },
   buy: function() {
 	this.update({'bought':true});
   },
   render: function() {
-		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
+		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button><button className='btn' onClick={this.add}>Add</button></span>;
 
 		if(this.props.done)
 		{
@@ -44,6 +51,22 @@ var Planned = React.createClass({
   getInitialState: function() {
     return {data: []};
   }, 
+  add: function() {
+	data = {
+		'name':'test',
+	    'price':5
+	}
+	$.ajax({
+		url: 'api/purchase',
+		type: 'PUT',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		success: function(result) {
+			console.log('PUT! SUCCESS!');
+		}
+	});
+  },
+
   ref_me: function() {
 	console.log('called refreshed!');
 	$.get('api2/planned', function(response)
@@ -72,6 +95,7 @@ var Planned = React.createClass({
 			<ul>
 			{rows}
 			</ul>
+			<button onClick={this.add}>Add Test Record</button>
 			</div>
 		);
 	}
