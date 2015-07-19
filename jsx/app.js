@@ -58,11 +58,11 @@ var Planned = React.createClass({
 	}
 	$.ajax({
 		url: 'api/purchase',
-		type: 'PUT',
+		type: 'POST',
 		data: JSON.stringify(data),
 		contentType: 'application/json',
 		success: function(result) {
-			console.log('PUT! SUCCESS!');
+			console.log('POST test record SUCCESS!');
 		}
 	});
   },
