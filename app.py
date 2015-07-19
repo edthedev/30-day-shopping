@@ -142,6 +142,12 @@ def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
+def _return(data):
+    ''' Clean and return some records. '''
+    _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
+    result = [d.__dict__ for d in data]
+    _LOGGER.debug("api2/planned: %s", result)
+    return jsonify(objects=result)
 
 from flask import jsonify
 @app.route('/api2/planned', methods=['GET'])
@@ -150,10 +156,13 @@ def planned():
     data = session.query(Purchase).filter(Purchase.bought == False).all()
     # data = session.query(Purchase).all()
     # Remove ORM cruft:
-    _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
-    result = [d.__dict__ for d in data]
-    _LOGGER.debug("api2/planned: %s", result)
-    return jsonify(objects=result)
+    return _return(data)
+
+@app.route('/api2/recent', methods=['GET'])
+def recent():
+    session = Session()
+    data = session.query(Purchase).filter(Purchase.bought == True).order_by(Purchase.done).limit(10).all()
+    return _return(data)
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
