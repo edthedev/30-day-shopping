@@ -78,7 +78,7 @@ class Purchase(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255))
     price = db.Column(db.Float(precision=2))
-    bought = db.Column(db.Boolean)
+    bought = db.Column(db.Boolean, default=False)
     done = db.Column(db.DateTime)
     expected = db.Column(db.DateTime)
 
@@ -147,9 +147,8 @@ from flask import jsonify
 @app.route('/api2/planned', methods=['GET'])
 def planned():
     session = Session()
-    # TODO: Make me more discriminate again...
-    # data = session.query(Purchase).filter(Purchase.bought != True).all()
-    data = session.query(Purchase).all()
+    data = session.query(Purchase).filter(Purchase.bought == False).all()
+    # data = session.query(Purchase).all()
     # Remove ORM cruft:
     _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
     result = [d.__dict__ for d in data]
