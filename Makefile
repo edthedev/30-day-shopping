@@ -48,6 +48,12 @@ explore_db:
 	sqlite3 shopping2.db
 	# Hint: .tables .schema
 
+dump_schema:
+	sqlite3 shopping.db ".schema"
+
+dump_data:
+	sqlite3 shopping.db "select * from purchase"
+
 postman:
 	open chrome://apps/
 
