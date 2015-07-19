@@ -33,11 +33,11 @@ var Purchase = React.createClass({
 	this.update({'bought':true});
   },
   render: function() {
-		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button><button className='btn' onClick={this.add}>Add</button></span>;
+		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
-		if(this.props.done)
+		if(this.props.obj.bought)
 		{
-			buttons = <button className='btn' onClick={this.redoAction}>Redo</button>;
+			buttons = '';
 		}
 
 		return (
