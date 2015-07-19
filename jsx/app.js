@@ -55,7 +55,7 @@ var PurchaseForm = React.createClass({
     if (!price || !name) {
       return;
     }
-    this.props.onpurchaseSubmit({name: name, price: price});
+    this.props.onPurchaseSubmit({name: name, price: price});
     React.findDOMNode(this.refs.name).value = '';
     React.findDOMNode(this.refs.price).value = '';
   },
@@ -74,11 +74,7 @@ var Planned = React.createClass({
   getInitialState: function() {
     return {data: []};
   }, 
-  add: function() {
-	data = {
-		'name':'test',
-	    'price':5
-	}
+  add: function(data) {
 	$.ajax({
 		url: 'api/purchase',
 		type: 'POST',
@@ -119,16 +115,7 @@ var Planned = React.createClass({
 			{rows}
 			</ul>
 			<h2>Plan Another Purchase</h2>
-			<form novalidate class="simple-form">
-			<label for='name'>Item:</label>
-			<input id='name' type="text" /> 
-			<label for='price'>Price: </label>
-			<input id='price' type="text" /> 
-			<span className="btn-group">
-			<button onClick={this.add}>Add Test Record</button>
-			</span>
-</form>
-
+			<PurchaseForm onPurchaseSubmit={this.add}/>
 			</div>
 		);
 	}
