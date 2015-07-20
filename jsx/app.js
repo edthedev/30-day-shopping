@@ -162,9 +162,8 @@ var Saved = React.createClass({
   ref_me: function() {
 	$.get('api2/nobuy', function(response)
 		{
-			data = unpack(response);
 			if(this.isMounted()){
-				this.setState({data: data});
+				this.setState(response);
 			}
 		}.bind(this));
   },
