@@ -142,11 +142,22 @@ def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-def _return(data):
-    ''' Clean and return some records. '''
+def _uncrap(data):
+    ''' Uncrap the crap that SQLAlchemy filter query returns. '''
     _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
     result = [d.__dict__ for d in data]
-    _LOGGER.debug("api2/planned: %s", result)
+    return result
+
+def _uncrap_raw(data):
+    ''' Uncrap the crap that SQLAlchemy text query returns. '''
+    result = list(data)
+    it = result[0]
+    _LOGGER.debug("Bullshit: %s", type(it))
+    return it 
+
+def _return(data):
+    ''' Clean and return some records. '''
+    result = _uncrap(data)
     return jsonify(objects=result)
 
 from flask import jsonify
@@ -164,11 +175,17 @@ def recent():
     data = session.query(Purchase).filter(Purchase.bought == True).order_by(Purchase.done).limit(10).all()
     return _return(data)
 
+from sqlalchemy.sql import func
 @app.route('/api2/nobuy', methods=['GET'])
 def nobuy():
     session = Session()
     data = session.query(Purchase).filter(Purchase.bought == False, Purchase.done != None).order_by(Purchase.done).limit(10).all()
-    return _return(data)
+    bs_saved = session.query(func.sum(Purchase.price).label('saved')).all()[0]
+    # _LOGGER.debug("WTF? %s", type(bs_saved))
+    # _LOGGER.debug("WTF2? %s", bs_saved.__dict__)
+    saved = bs_saved.__dict__['saved']
+    data = _uncrap(data)
+    return jsonify(data=data, saved=saved)
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
