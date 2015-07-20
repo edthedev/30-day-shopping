@@ -4,14 +4,15 @@ See if you still want them 30 days later.
 Also meant to serve as a light weight example using Python and NodeJS.
 
 - Sqlalchemy describes and creates the database.
-- Flask-Restless provides the API
-and (in local development mode) serves the main index.html file.
-- AngularJS provides the user experience, and sends data updates to the Eve API.
+- Flask serves web pages and a couple APIs: api is stock REST, api2 is custom.
+    (api2 is just a way to make the JavaScript .GET calls much simpler.)
+- JQuery updates and fetches data from the API.
+- React.js displays data fetched from the API.
 
 -----------------------------------
 License:
 
-Copyright 2014 Edward Delaporte
+Copyright 2015 Edward Delaporte
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -68,7 +69,8 @@ app.config['DEBUG'] = True
 # -----------------------------------
 # Database models.
 # -----------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shopping.db'
+DB_CONN = 'sqlite:///shopping.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONN
 db = flask.ext.sqlalchemy.SQLAlchemy(app)
 
 class Purchase(db.Model):
@@ -76,16 +78,16 @@ class Purchase(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255))
     price = db.Column(db.Float(precision=2))
-    bought = db.Column(db.Boolean)
+    bought = db.Column(db.Boolean, default=False)
     done = db.Column(db.DateTime)
     expected = db.Column(db.DateTime)
 
 #    class Meta:
 #        database = db
 
-    def __repr__(self):
-        _data = self.__dict__['_data']
-        return "{expected} - {name} ${price}".format(**_data)
+    #def __repr__(self):
+    #    _data = self.__dict__['_data']
+    #    return "{expected} - {name} ${price}".format(**_data)
 
     def save(self):
         ''' Add default behavior for expected purchase date. '''
@@ -125,6 +127,11 @@ manager.create_api(Purchase,
         allow_functions=True,
         )
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+engine = create_engine(DB_CONN)
+Session = sessionmaker(bind=engine)
+
 # -----------------------------------
 # Other pages
 # -----------------------------------
@@ -134,6 +141,51 @@ def index():
     _LOGGER.error('Index?')
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
+
+def _uncrap(data):
+    ''' Uncrap the crap that SQLAlchemy filter query returns. '''
+    _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
+    result = [d.__dict__ for d in data]
+    return result
+
+def _uncrap_raw(data):
+    ''' Uncrap the crap that SQLAlchemy text query returns. '''
+    result = list(data)
+    it = result[0]
+    _LOGGER.debug("Bullshit: %s", type(it))
+    return it 
+
+def _return(data):
+    ''' Clean and return some records. '''
+    result = _uncrap(data)
+    return jsonify(objects=result)
+
+from flask import jsonify
+@app.route('/api2/planned', methods=['GET'])
+def planned():
+    session = Session()
+    data = session.query(Purchase).filter(Purchase.bought == False).all()
+    # data = session.query(Purchase).all()
+    # Remove ORM cruft:
+    return _return(data)
+
+@app.route('/api2/recent', methods=['GET'])
+def recent():
+    session = Session()
+    data = session.query(Purchase).filter(Purchase.bought == True).order_by(Purchase.done).limit(10).all()
+    return _return(data)
+
+from sqlalchemy.sql import func
+@app.route('/api2/nobuy', methods=['GET'])
+def nobuy():
+    session = Session()
+    data = session.query(Purchase).filter(Purchase.bought == False, Purchase.done != None).order_by(Purchase.done).limit(10).all()
+    bs_saved = session.query(func.sum(Purchase.price).label('saved')).all()[0]
+    # _LOGGER.debug("WTF? %s", type(bs_saved))
+    # _LOGGER.debug("WTF2? %s", bs_saved.__dict__)
+    saved = bs_saved.__dict__['saved']
+    data = _uncrap(data)
+    return jsonify(data=data, saved=saved)
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):

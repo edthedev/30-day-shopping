@@ -6,13 +6,21 @@ VPIP=$(VENV)/bin/pip
 ########################################
 #  Development Tasks
 ########################################
+.PHONY: static
+
+static:
+	jsx -w jsx/ static/
+
+bower_reqs:
+	bower install
+
 venv:
 	virtualenv $(VENV)
 
 requirements:
 	$(VPIP) install -r $(BASEDIR)/requirements.txt
 
-setup: venv requirements
+setup: venv requirements bower_rews
 
 checkin_all_the_things:
 	cd $(BASEDIR); git commit -a -m "CHECKIN ALL THE THINGS!!1!"
@@ -27,7 +35,7 @@ open:
 	open http://127.0.0.1:5000/
 
 edit:
-	vim app.py index.html static/controller.js
+	vim app.py index.html jsx/app.js
 
 static_files:
 	# Lodash is required by restangular
@@ -39,6 +47,12 @@ taillog:
 explore_db:
 	sqlite3 shopping2.db
 	# Hint: .tables .schema
+
+dump_schema:
+	sqlite3 shopping.db ".schema"
+
+dump_data:
+	sqlite3 shopping.db "select * from purchase"
 
 postman:
 	open chrome://apps/
