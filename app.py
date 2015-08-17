@@ -1,9 +1,9 @@
 ''' Shop slowly - add items to this web app.
 See if you still want them 30 days later.
 
-Also meant to serve as a light weight example using Python and NodeJS.
+Also meant to serve as a light weight example using Python and React.js.
 
-- Sqlalchemy describes and creates the database.
+- PonyORM describes and creates the database.
 - Flask serves web pages and a couple APIs: api is stock REST, api2 is custom.
     (api2 is just a way to make the JavaScript .GET calls much simpler.)
 - JQuery updates and fetches data from the API.
@@ -37,8 +37,9 @@ __author__ = 'Edward Delaporte edthedev@gmail.com'
 # Python native imports
 import os
 import logging
-from datetime import timedelta
+# from datetime import timedelta
 
+# Libraries
 # -----------------------------------
 # Constants
 # -----------------------------------
@@ -69,71 +70,51 @@ app.config['DEBUG'] = True
 # -----------------------------------
 # Database models.
 # -----------------------------------
-DB_CONN = 'sqlite:///shopping.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONN
-db = flask.ext.sqlalchemy.SQLAlchemy(app)
+_DATABASE_FILE = "shopping.db"
 
-class Purchase(db.Model):
-    __tablename__ = 'purchase'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(255))
-    price = db.Column(db.Float(precision=2))
-    bought = db.Column(db.Boolean, default=False)
-    done = db.Column(db.DateTime)
-    expected = db.Column(db.DateTime)
+from pony.orm import Database, Required, PrimaryKey, sql_debug, select, db_session, Optional
+sql_debug(True)
+db = Database('sqlite', _DATABASE_FILE, create_db=True)
+from datetime import datetime
+# Models
 
-#    class Meta:
-#        database = db
+class Purchase(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    name = Required(str)
+    added = Required(datetime, default=datetime.now())
+    price = Optional(long)
+    bought = Optional(bool)
+    done = Optional(datetime)
 
-    #def __repr__(self):
-    #    _data = self.__dict__['_data']
-    #    return "{expected} - {name} ${price}".format(**_data)
+    #def expected(self):
+    #    return self.added + datetime.timedelta(days=self.price)
 
-    def save(self):
-        ''' Add default behavior for expected purchase date. '''
-        if not self.expected:
-            if self.price:
-                # Wait one day per dollar of cost.
-                self.expected = self.added + timedelta(days=int(self.price))
-            else:
-                # Or 30 days if price is unknown.
-                self.expected = self.added + timedelta(days=30)
-        super(Purchase, self).save()
-
-# Base.metadata.create_all(engine)
-# Purchase.metadata.create_all(engine)
+    #def save(self):
+    #    ''' Add default behavior for expected purchase date. '''
+    #    if not self.expected:
+#            if self.price:
+#                # Wait one day per dollar of cost.
+#                self.expected = self.added + timedelta(days=int(self.price))
+#            else:
+#                # Or 30 days if price is unknown.
+#                self.expected = self.added + timedelta(days=30)
+#        super(Purchase, self).save()
 
 
-# Create the database tables.
-db.create_all()
-_LOGGER.debug('finished creating db')
+# ----------------------------------------------------
+# API (with flask-restful, rather than flask-restless)
+#   Why change? SQLAlchemy isn't fun. Pony ORM is.
+#   Also - the boring crap is now three lines, instead of 10
+# ----------------------------------------------------
 
-# -----------------------------------
-# All about the app.
-# This is a Flask app and an Eve app.
-# (Eve app is a subclass of Flask app)
-# -----------------------------------
-# -----------------------------------
-# API
-# -----------------------------------
-
-# Create the Flask-Restless API manager.
-manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
-
-# Create API endpoints, which will be available at /api/<tablename> by
-# default. Allowed HTTP methods can be specified as well.
-manager.create_api(Purchase,
-        methods=['GET', 'PUT', 'POST', 'DELETE'],
-        allow_functions=True,
-        )
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-engine = create_engine(DB_CONN)
-Session = sessionmaker(bind=engine)
+# GET/PUT/POST/DELETE a purchase per REST.
+#   a.k.a. boring crap.
+from flask.ext.restful import Api, Resource, db_session
+api = Api(app)
+api.add_resource(Purchase, 'api/purchase')
 
 # -----------------------------------
-# Other pages
+# Custom API calls - Interesting stuff.
 # -----------------------------------
 from flask import send_from_directory
 @app.route('/', methods=['GET'])
@@ -142,50 +123,42 @@ def index():
     return send_from_directory(
         os.path.join(APP_ROOT), 'index.html')
 
-def _uncrap(data):
-    ''' Uncrap the crap that SQLAlchemy filter query returns. '''
-    _ =  [d.__dict__.pop('_sa_instance_state') for d in data]
-    result = [d.__dict__ for d in data]
-    return result
+class Planned(Resource):
+    @db_session
+    def get(self):
+        #session = Session()
+        #user = session['twitter_user']
+        query = select(x for x in Purchase if x.bought == False)
+        return [item.to_dict() for item in query]
 
-def _uncrap_raw(data):
-    ''' Uncrap the crap that SQLAlchemy text query returns. '''
-    result = list(data)
-    it = result[0]
-    _LOGGER.debug("Bullshit: %s", type(it))
-    return it 
+class Recent(Resource):
+    @db_session
+    def get(self):
+        # session = Session()
+        #user = session['twitter_user']
+        query = select(x for x in Purchase if x.bought == True and x.done is not None ).order_by(Purchase.done)
+        return [item.to_dict() for item in query][:10]
 
-def _return(data):
-    ''' Clean and return some records. '''
-    result = _uncrap(data)
-    return jsonify(objects=result)
+class NoBuy(Resource):
+    @db_session
+    def get(self):
+        #session = Session()
+        #user = session['twitter_user']
+        query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
+        return [item.to_dict() for item in query][:10]
 
-from flask import jsonify
-@app.route('/api2/planned', methods=['GET'])
-def planned():
-    session = Session()
-    data = session.query(Purchase).filter(Purchase.bought == False).all()
-    # data = session.query(Purchase).all()
-    # Remove ORM cruft:
-    return _return(data)
+# from flask import jsonify
 
-@app.route('/api2/recent', methods=['GET'])
-def recent():
-    session = Session()
-    data = session.query(Purchase).filter(Purchase.bought == True).order_by(Purchase.done).limit(10).all()
-    return _return(data)
+#    bs_saved = session.query(func.sum(Purchase.price).label('saved')).all()[0]
+#    # _LOGGER.debug("WTF? %s", type(bs_saved))
+#    # _LOGGER.debug("WTF2? %s", bs_saved.__dict__)
+#    saved = bs_saved.__dict__['saved']
+#    data = _uncrap(data)
+#    return jsonify(data=data, saved=saved)
 
-from sqlalchemy.sql import func
-@app.route('/api2/nobuy', methods=['GET'])
-def nobuy():
-    session = Session()
-    data = session.query(Purchase).filter(Purchase.bought == False, Purchase.done != None).order_by(Purchase.done).limit(10).all()
-    bs_saved = session.query(func.sum(Purchase.price).label('saved')).all()[0]
-    # _LOGGER.debug("WTF? %s", type(bs_saved))
-    # _LOGGER.debug("WTF2? %s", bs_saved.__dict__)
-    saved = bs_saved.__dict__['saved']
-    data = _uncrap(data)
-    return jsonify(data=data, saved=saved)
+api.add_resource(Planned, 'api2/planned')
+api.add_resource(Recent, 'api2/recent')
+api.add_resource(NoBuy, 'api2/nobuy')
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):

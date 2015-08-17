@@ -1,3 +1,2 @@
-SQLAlchemy
-flask-restless
-Flask-SQLAlchemy
+flask-restful
+pony
