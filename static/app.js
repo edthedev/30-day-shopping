@@ -5,6 +5,7 @@ var Purchase = React.createClass({displayName: "Purchase",
   update: function(updates) {
 	updates["id"] = this.props.obj.id;
 	var ref_method = this.props.ref_method;
+	console.log('ref_method', ref_method);
 	$.ajax({
 		url: 'api/purchase/' + this.props.obj.id,
 		type: 'PUT',
@@ -95,8 +96,9 @@ var Planned = React.createClass({displayName: "Planned",
 		console.log('called render!');
 		console.log('state:');
 		console.log(this.state);
+		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item, ref_method: this.ref_me}));
+				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item, ref_method: ref_method}));
 			});
 		return (
 			React.createElement("div", null, 
