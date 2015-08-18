@@ -101,47 +101,8 @@ var PurchaseList = React.createClass({displayName: "PurchaseList",
 				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item, ref_method: ref_method}));
 			});
 		return (
-			React.createElement("div", null, 
-			React.createElement("h3", null, "Plan to Buy"), 
 			React.createElement("ul", null, 
 			rows
-			), 
-			React.createElement("h2", null, "Plan Another Purchase"), 
-			React.createElement(PurchaseForm, {onPurchaseSubmit: this.add})
-			)
-		);
-	}
-});
-
-var Recent = React.createClass({displayName: "Recent",
-  getInitialState: function() {
-    return {data: []};
-  }, 
-  ref_me: function() {
-	$.get('api2/recent', function(response)
-		{
-			data = response;
-			if(this.isMounted()){
-				this.setState({data: data});
-			}
-		}.bind(this));
-  },
-  componentDidMount: function() {
-	this.ref_me();
-  },
-  render: function(){
-		console.log('called render!');
-		console.log('state:');
-		console.log(this.state);
-		var rows = this.state.data.map(function (item) {
-				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item}));
-			});
-		return (
-			React.createElement("div", null, 
-			React.createElement("h3", null, "Recently Bought"), 
-			React.createElement("ul", null, 
-			rows
-			)
 			)
 		);
 	}
@@ -181,10 +142,14 @@ var Saved = React.createClass({displayName: "Saved",
 
 React.render(
   React.createElement("div", null, 
+  React.createElement("h2", null, "Plan to Buy"), 
   React.createElement(PurchaseList, {api_url: "api2/planned"}), 
+  React.createElement("h2", null, "Plan Another Purchase"), 
+  React.createElement(PurchaseForm, {onPurchaseSubmit: this.add}), 
+  React.createElement("h2", null, "Bought"), 
   React.createElement(PurchaseList, {api_url: "api2/recent"}), 
-  React.createElement(Recent, null), 
-  React.createElement(Saved, null)
+  React.createElement("h2", null, "Did Not Buy"), 
+  React.createElement(PurchaseList, {api_url: "api2/nobuy"})
   ),
   document.getElementById('content')
 );

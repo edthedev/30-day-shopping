@@ -101,48 +101,9 @@ var PurchaseList = React.createClass({
 				return (<Purchase key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
 			});
 		return (
-			<div>
-			<h3>Plan to Buy</h3>
 			<ul>
 			{rows}
 			</ul>
-			<h2>Plan Another Purchase</h2>
-			<PurchaseForm onPurchaseSubmit={this.add}/>
-			</div>
-		);
-	}
-});
-
-var Recent = React.createClass({
-  getInitialState: function() {
-    return {data: []};
-  }, 
-  ref_me: function() {
-	$.get('api2/recent', function(response)
-		{
-			data = response;
-			if(this.isMounted()){
-				this.setState({data: data});
-			}
-		}.bind(this));
-  },
-  componentDidMount: function() {
-	this.ref_me();
-  },
-  render: function(){
-		console.log('called render!');
-		console.log('state:');
-		console.log(this.state);
-		var rows = this.state.data.map(function (item) {
-				return (<Purchase key={item.id} name={item.name} obj={item}/>);
-			});
-		return (
-			<div>
-			<h3>Recently Bought</h3>
-			<ul>
-			{rows}
-			</ul>
-			</div>
 		);
 	}
 });
@@ -181,10 +142,14 @@ var Saved = React.createClass({
 
 React.render(
   <div>
+  <h2>Plan to Buy</h2>
   <PurchaseList api_url="api2/planned" />
+  <h2>Plan Another Purchase</h2>
+  <PurchaseForm onPurchaseSubmit={this.add}/>
+  <h2>Bought</h2>
   <PurchaseList api_url="api2/recent" />
-  <Recent />
-  <Saved />
+  <h2>Did Not Buy</h2>
+  <PurchaseList api_url="api2/nobuy" />
   </div>,
   document.getElementById('content')
 );
