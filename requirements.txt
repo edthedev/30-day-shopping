@@ -1,2 +1,2 @@
-flask-restful
+flask_restful
 pony

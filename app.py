@@ -82,15 +82,17 @@ class Purchase(db.Entity):
     id = PrimaryKey(int, auto=True)
     name = Required(str)
     added = Required(datetime, default=datetime.now())
-    price = Optional(long)
+    price = Optional(float)
     bought = Optional(bool)
     done = Optional(datetime)
+
+db.generate_mapping(create_tables=True) 
 
     #def expected(self):
     #    return self.added + datetime.timedelta(days=self.price)
 
     #def save(self):
-    #    ''' Add default behavior for expected purchase date. '''
+    #    ''' Add default behavior for expected Purchase date. '''
     #    if not self.expected:
 #            if self.price:
 #                # Wait one day per dollar of cost.
@@ -107,11 +109,9 @@ class Purchase(db.Entity):
 #   Also - the boring crap is now three lines, instead of 10
 # ----------------------------------------------------
 
-# GET/PUT/POST/DELETE a purchase per REST.
-#   a.k.a. boring crap.
-from flask.ext.restful import Api, Resource, db_session
+from flask_restful import Api, Resource
+
 api = Api(app)
-api.add_resource(Purchase, 'api/purchase')
 
 # -----------------------------------
 # Custom API calls - Interesting stuff.
@@ -156,14 +156,26 @@ class NoBuy(Resource):
 #    data = _uncrap(data)
 #    return jsonify(data=data, saved=saved)
 
-api.add_resource(Planned, 'api2/planned')
-api.add_resource(Recent, 'api2/recent')
-api.add_resource(NoBuy, 'api2/nobuy')
+api.add_resource(Planned, '/api2/planned')
+api.add_resource(Recent, '/api2/recent')
+api.add_resource(NoBuy, '/api2/nobuy')
 
 @app.route('/static/<path:thepath>')
 def athingisdone(thepath):
     _LOGGER.error('Got a request for %s', thepath)
     return send_from_directory( os.path.join(APP_ROOT, 'static'), thepath)
+
+# -------------------------------------
+#  Let's just API
+# -------------------------------------
+
+class PurchaseAPI(Resource):
+    @db_session
+    def get(self):
+        query = select(x for x in Purchase).order_by(Purchase.done)
+        return [item.to_dict() for item in query][:10]
+
+api.add_resource(PurchaseAPI, '/api/purchase')
 
 # -----------------------------------
 # Start the app
