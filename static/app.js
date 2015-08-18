@@ -61,13 +61,13 @@ var PurchaseForm = React.createClass({displayName: "PurchaseForm",
   }
 });
 
-var Planned = React.createClass({displayName: "Planned",
+var PurchaseList = React.createClass({displayName: "PurchaseList",
   getInitialState: function() {
     return {data: []};
   }, 
   ref_me: function() {
 	console.log('called refreshed!');
-	$.get('api2/planned', function(response)
+	$.get(this.props.api_url, function(response)
 		{
 			data = response;
 			console.log(data);
@@ -181,7 +181,8 @@ var Saved = React.createClass({displayName: "Saved",
 
 React.render(
   React.createElement("div", null, 
-  React.createElement(Planned, null), 
+  React.createElement(PurchaseList, {api_url: "api2/planned"}), 
+  React.createElement(PurchaseList, {api_url: "api2/recent"}), 
   React.createElement(Recent, null), 
   React.createElement(Saved, null)
   ),

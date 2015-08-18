@@ -144,8 +144,9 @@ class Recent(Resource):
     def get(self):
         # session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought == True and x.done is not None ).order_by(Purchase.done)
-        return [item.to_dict() for item in query][:10]
+        query = select(x for x in Purchase if x.bought == True).order_by(Purchase.done)
+        results = [item.to_json() for item in query][:10]
+        return results
 
 class NoBuy(Resource):
     @db_session
@@ -153,7 +154,7 @@ class NoBuy(Resource):
         #session = Session()
         #user = session['twitter_user']
         query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
-        return [item.to_dict() for item in query][:10]
+        return [item.to_json() for item in query][:10]
 
 from flask import jsonify
 

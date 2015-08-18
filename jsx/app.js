@@ -61,13 +61,13 @@ var PurchaseForm = React.createClass({
   }
 });
 
-var Planned = React.createClass({
+var PurchaseList = React.createClass({
   getInitialState: function() {
     return {data: []};
   }, 
   ref_me: function() {
 	console.log('called refreshed!');
-	$.get('api2/planned', function(response)
+	$.get(this.props.api_url, function(response)
 		{
 			data = response;
 			console.log(data);
@@ -181,7 +181,8 @@ var Saved = React.createClass({
 
 React.render(
   <div>
-  <Planned />
+  <PurchaseList api_url="api2/planned" />
+  <PurchaseList api_url="api2/recent" />
   <Recent />
   <Saved />
   </div>,
