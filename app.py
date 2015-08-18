@@ -116,7 +116,7 @@ api = Api(app)
 # -----------------------------------
 # Custom API calls - Interesting stuff.
 # -----------------------------------
-from flask import send_from_directory
+from flask import send_from_directory, request
 @app.route('/', methods=['GET'])
 def index():
     _LOGGER.error('Index?')
@@ -147,7 +147,7 @@ class NoBuy(Resource):
         query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
         return [item.to_dict() for item in query][:10]
 
-# from flask import jsonify
+from flask import jsonify
 
 #    bs_saved = session.query(func.sum(Purchase.price).label('saved')).all()[0]
 #    # _LOGGER.debug("WTF? %s", type(bs_saved))
@@ -174,6 +174,18 @@ class PurchaseAPI(Resource):
     def get(self):
         query = select(x for x in Purchase).order_by(Purchase.done)
         return [item.to_dict() for item in query][:10]
+
+    @db_session
+    def put(self, item_id):
+        item = Purchase[item_id]
+        item.set(**request.form['data'])
+        return item
+
+    @db_session
+    def post(self):
+        data = request.json
+        item = Purchase(**data)
+        return jsonify(item.to_dict())
 
 api.add_resource(PurchaseAPI, '/api/purchase')
 
