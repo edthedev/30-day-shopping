@@ -78,10 +78,10 @@ var Planned = React.createClass({
 		contentType: 'application/json',
 		success: function(result) {
 			console.log('POST test record SUCCESS!');
-		}
+			this.ref_me();
+		}.bind(this)
 	});
   },
-
   ref_me: function() {
 	console.log('called refreshed!');
 	$.get('api2/planned', function(response)
