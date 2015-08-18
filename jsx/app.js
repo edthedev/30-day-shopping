@@ -90,7 +90,7 @@ var Planned = React.createClass({
 	console.log('called refreshed!');
 	$.get('api2/planned', function(response)
 		{
-			data = unpack(response);
+			data = response;
 			console.log(data);
 			if(this.isMounted()){
 				this.setState({data: data});
@@ -137,7 +137,7 @@ var Recent = React.createClass({
   componentDidMount: function() {
 	this.ref_me();
   },
-	render: function(){
+  render: function(){
 		console.log('called render!');
 		console.log('state:');
 		console.log(this.state);

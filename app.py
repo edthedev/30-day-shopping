@@ -83,8 +83,14 @@ class Purchase(db.Entity):
     name = Required(str)
     added = Required(datetime, default=datetime.now())
     price = Optional(float)
-    bought = Optional(bool)
+    bought = Required(bool, default=False)
     done = Optional(datetime)
+
+    def to_json(self):
+        view = self.to_dict()
+        view['added'] = str(self.added)
+        view['done'] = str(self.done)
+        return view
 
 db.generate_mapping(create_tables=True) 
 
@@ -128,8 +134,10 @@ class Planned(Resource):
     def get(self):
         #session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought == False)
-        return [item.to_dict() for item in query]
+        query = select(x for x in Purchase if x.bought != True)
+        results = [item.to_json() for item in query]
+        _LOGGER.debug(results)
+        return results
 
 class Recent(Resource):
     @db_session

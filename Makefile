@@ -45,8 +45,8 @@ taillog:
 	tail -f shopping.log
 
 explore_db:
-	sqlite3 shopping2.db
-	# Hint: .tables .schema
+	echo "Hint: .tables .schema"
+	sqlite3 shopping.db
 
 dump_schema:
 	sqlite3 shopping.db ".schema"
