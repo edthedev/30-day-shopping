@@ -100,42 +100,16 @@ var PurchaseList = React.createClass({
 		var rows = this.state.data.map(function (item) {
 				return (<Purchase key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
 			});
-		return (
-			<ul>
-			{rows}
-			</ul>
-		);
-	}
-});
-
-var Saved = React.createClass({
-  getInitialState: function() {
-    return {data: [], saved: 0};
-  }, 
-  ref_me: function() {
-	$.get('api2/nobuy', function(response)
+		var add_form = "";
+		if(this.props.api_url == "api2/planned")
 		{
-			if(this.isMounted()){
-				this.setState(response);
-			}
-		}.bind(this));
-  },
-  componentDidMount: function() {
-	this.ref_me();
-  },
-	render: function(){
-		var rows = this.state.data.map(function (item) {
-				return (<Purchase key={item.id} name={item.name} obj={item}/>);
-			});
+			add_form = (<div><h2>Plan Another Purchase</h2> <PurchaseForm onPurchaseSubmit={this.add}/></div>);
+		}
 		return (
-			<div>
-			<h3>Will not buy.</h3>
-			<p>${this.state.saved} saved!</p>
 			<ul>
 			{rows}
-			{(rows.length==0)&&(<li>Nothing skipped yet.</li>)}
+			{add_form}
 			</ul>
-			</div>
 		);
 	}
 });
@@ -144,8 +118,6 @@ React.render(
   <div>
   <h2>Plan to Buy</h2>
   <PurchaseList api_url="api2/planned" />
-  <h2>Plan Another Purchase</h2>
-  <PurchaseForm onPurchaseSubmit={this.add}/>
   <h2>Bought</h2>
   <PurchaseList api_url="api2/recent" />
   <h2>Did Not Buy</h2>

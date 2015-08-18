@@ -100,41 +100,15 @@ var PurchaseList = React.createClass({displayName: "PurchaseList",
 		var rows = this.state.data.map(function (item) {
 				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item, ref_method: ref_method}));
 			});
-		return (
-			React.createElement("ul", null, 
-			rows
-			)
-		);
-	}
-});
-
-var Saved = React.createClass({displayName: "Saved",
-  getInitialState: function() {
-    return {data: [], saved: 0};
-  }, 
-  ref_me: function() {
-	$.get('api2/nobuy', function(response)
+		var add_form = "";
+		if(this.props.api_url == "api2/planned")
 		{
-			if(this.isMounted()){
-				this.setState(response);
-			}
-		}.bind(this));
-  },
-  componentDidMount: function() {
-	this.ref_me();
-  },
-	render: function(){
-		var rows = this.state.data.map(function (item) {
-				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item}));
-			});
+			add_form = (React.createElement("div", null, React.createElement("h2", null, "Plan Another Purchase"), " ", React.createElement(PurchaseForm, {onPurchaseSubmit: this.add})));
+		}
 		return (
-			React.createElement("div", null, 
-			React.createElement("h3", null, "Will not buy."), 
-			React.createElement("p", null, "$", this.state.saved, " saved!"), 
 			React.createElement("ul", null, 
 			rows, 
-			(rows.length==0)&&(React.createElement("li", null, "Nothing skipped yet."))
-			)
+			add_form
 			)
 		);
 	}
@@ -144,8 +118,6 @@ React.render(
   React.createElement("div", null, 
   React.createElement("h2", null, "Plan to Buy"), 
   React.createElement(PurchaseList, {api_url: "api2/planned"}), 
-  React.createElement("h2", null, "Plan Another Purchase"), 
-  React.createElement(PurchaseForm, {onPurchaseSubmit: this.add}), 
   React.createElement("h2", null, "Bought"), 
   React.createElement(PurchaseList, {api_url: "api2/recent"}), 
   React.createElement("h2", null, "Did Not Buy"), 
