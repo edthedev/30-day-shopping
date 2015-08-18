@@ -1,8 +1,4 @@
 
-function unpack($obj){
-//    console.log($obj);
-    return $obj['objects'];
-}
 var today = moment().startOf('day');
 
 var Purchase = React.createClass({
@@ -128,7 +124,7 @@ var Recent = React.createClass({
   ref_me: function() {
 	$.get('api2/recent', function(response)
 		{
-			data = unpack(response);
+			data = response;
 			if(this.isMounted()){
 				this.setState({data: data});
 			}

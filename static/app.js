@@ -1,8 +1,4 @@
 
-function unpack($obj){
-//    console.log($obj);
-    return $obj['objects'];
-}
 var today = moment().startOf('day');
 
 var Purchase = React.createClass({displayName: "Purchase",
@@ -90,7 +86,7 @@ var Planned = React.createClass({displayName: "Planned",
 	console.log('called refreshed!');
 	$.get('api2/planned', function(response)
 		{
-			data = unpack(response);
+			data = response;
 			console.log(data);
 			if(this.isMounted()){
 				this.setState({data: data});
@@ -128,7 +124,7 @@ var Recent = React.createClass({displayName: "Recent",
   ref_me: function() {
 	$.get('api2/recent', function(response)
 		{
-			data = unpack(response);
+			data = response;
 			if(this.isMounted()){
 				this.setState({data: data});
 			}
@@ -137,7 +133,7 @@ var Recent = React.createClass({displayName: "Recent",
   componentDidMount: function() {
 	this.ref_me();
   },
-	render: function(){
+  render: function(){
 		console.log('called render!');
 		console.log('state:');
 		console.log(this.state);
