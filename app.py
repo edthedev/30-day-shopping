@@ -184,9 +184,9 @@ class PurchaseAPI(Resource):
 
     @db_session
     def put(self, item_id):
-        item = Purchase[item_id]
-        item.set(**request.form['data'])
-        return item
+        data = request.json
+        Purchase[item_id].set(**data)
+        return jsonify(Purchase[item_id].to_dict())
 
     @db_session
     def post(self):
@@ -200,7 +200,7 @@ class PurchaseAPI(Resource):
         item.delete()
         return '', 204
 
-api.add_resource(PurchaseAPI, '/api/purchase')
+api.add_resource(PurchaseAPI, '/api/purchase/<string:item_id>')
 
 # -----------------------------------
 # Start the app

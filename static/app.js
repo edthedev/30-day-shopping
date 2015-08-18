@@ -3,23 +3,16 @@ var today = moment().startOf('day');
 
 var Purchase = React.createClass({displayName: "Purchase",
   update: function(updates) {
-	id = this.props.obj.id;
-    data = this.props.obj;
-	for(var prop in updates)
-	{
-		data[prop] = updates[prop];
-	}
-	data['done'] = today.toISOString();
-	console.log('data to PUT');
-	console.log(data);
+	updates["id"] = this.props.obj.id;
 	$.ajax({
-		url: 'api/purchase/' + id,
+		url: 'api/purchase/' + this.props.obj.id,
 		type: 'PUT',
-		data: JSON.stringify(data),
+		data: JSON.stringify(updates),
 		contentType: 'application/json',
 		success: function(result) {
 			console.log('PUT! SUCCESS!');
-		}
+			this.ref_method();
+		}.bind(this)
 	});
   },
   add: function() {
@@ -102,7 +95,7 @@ var Planned = React.createClass({displayName: "Planned",
 		console.log('state:');
 		console.log(this.state);
 		var rows = this.state.data.map(function (item) {
-				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item}));
+				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item, ref_method: this.ref_me}));
 			});
 		return (
 			React.createElement("div", null, 
