@@ -188,11 +188,6 @@ class PurchaseAPI(Resource):
         Purchase[item_id].set(**data)
         return jsonify(Purchase[item_id].to_dict())
 
-    @db_session
-    def post(self):
-        data = request.json
-        item = Purchase(**data)
-        return jsonify(item.to_dict())
 
     @db_session
     def delete(self, item_id):
@@ -200,6 +195,15 @@ class PurchaseAPI(Resource):
         item.delete()
         return '', 204
 
+class PurchaseListAPI(Resource):
+    @db_session
+    def post(self):
+        data = request.json
+        item = Purchase(**data)
+        return jsonify(item.to_dict())
+
+
+api.add_resource(PurchaseListAPI, '/api/purchase')
 api.add_resource(PurchaseAPI, '/api/purchase/<string:item_id>')
 
 # -----------------------------------

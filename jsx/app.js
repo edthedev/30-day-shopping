@@ -4,6 +4,7 @@ var today = moment().startOf('day');
 var Purchase = React.createClass({
   update: function(updates) {
 	updates["id"] = this.props.obj.id;
+	var ref_method = this.props.ref_method;
 	$.ajax({
 		url: 'api/purchase/' + this.props.obj.id,
 		type: 'PUT',
@@ -11,7 +12,7 @@ var Purchase = React.createClass({
 		contentType: 'application/json',
 		success: function(result) {
 			console.log('PUT! SUCCESS!');
-			this.ref_method();
+			ref_method();
 		}.bind(this)
 	});
   },
@@ -63,6 +64,17 @@ var Planned = React.createClass({
   getInitialState: function() {
     return {data: []};
   }, 
+  ref_me: function() {
+	console.log('called refreshed!');
+	$.get('api2/planned', function(response)
+		{
+			data = response;
+			console.log(data);
+			if(this.isMounted()){
+				this.setState({data: data});
+			}
+		}.bind(this));
+  },
   add: function(data) {
 	$.ajax({
 		url: 'api/purchase',
@@ -74,17 +86,6 @@ var Planned = React.createClass({
 			this.ref_me();
 		}.bind(this)
 	});
-  },
-  ref_me: function() {
-	console.log('called refreshed!');
-	$.get('api2/planned', function(response)
-		{
-			data = response;
-			console.log(data);
-			if(this.isMounted()){
-				this.setState({data: data});
-			}
-		}.bind(this));
   },
   componentDidMount: function() {
 	console.log('called compdidmount!');
