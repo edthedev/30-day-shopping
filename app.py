@@ -168,7 +168,6 @@ def athingisdone(thepath):
 # -------------------------------------
 #  Let's just API
 # -------------------------------------
-
 class PurchaseAPI(Resource):
     @db_session
     def get(self):
@@ -186,6 +185,12 @@ class PurchaseAPI(Resource):
         data = request.json
         item = Purchase(**data)
         return jsonify(item.to_dict())
+
+    @db_session
+    def delete(self, item_id):
+        item = Purchase[item_id]
+        item.delete()
+        return '', 204
 
 api.add_resource(PurchaseAPI, '/api/purchase')
 
