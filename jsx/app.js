@@ -61,6 +61,8 @@ var PurchaseForm = React.createClass({
   }
 });
 
+
+// TODO: Wrap everything up in a Big component that refreshes all child lists each time there is a change.
 var PurchaseList = React.createClass({
   getInitialState: function() {
     return {data: []};
