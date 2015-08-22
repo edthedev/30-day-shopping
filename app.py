@@ -134,7 +134,7 @@ class Planned(Resource):
     def get(self):
         #session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought != True)
+        query = select(x for x in Purchase if x.bought != True).order_by(Purchase.added)
         results = [item.to_json() for item in query]
         _LOGGER.debug(results)
         return results
