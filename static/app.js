@@ -26,7 +26,7 @@ var Purchase = React.createClass({displayName: "Purchase",
   },
   expected: function()
   {
-	  var result = today.clone();
+	  var result = moment(this.props.obj.added);
 	  // assume $1 per day accrual
 	  console.log("price...", this.props.obj.price);
 	  result.add(this.props.obj.price, "days");
@@ -34,7 +34,7 @@ var Purchase = React.createClass({displayName: "Purchase",
 	  return result.format(DISPLAY_DATE);
   },
   render: function() {
-		var buttons = React.createElement("span", null, React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
+		var buttons = React.createElement("span", null, " - ", this.expected(), " ", React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
 
 		if(this.props.obj.bought)
 		{
@@ -42,7 +42,7 @@ var Purchase = React.createClass({displayName: "Purchase",
 		}
 
 		return (
-			React.createElement("li", null, " $", this.props.obj.price, " - ", this.props.obj.name, " - ", this.expected(), " ", buttons
+			React.createElement("li", null, " ", this.props.obj.bought, " $", this.props.obj.price, " - ", this.props.obj.name, " ", buttons
 			)
 		);
   }
