@@ -2,6 +2,9 @@
 var today = moment().startOf('day');
 
 var Purchase = React.createClass({displayName: "Purchase",
+  getInitialState: function() {
+    return {focus: false};
+  }, 
   update: function(updates) {
 	updates["id"] = this.props.obj.id;
 	var ref_method = this.props.ref_method;
@@ -35,6 +38,9 @@ var Purchase = React.createClass({displayName: "Purchase",
   focus: function() {
 	  this.setState({focus:true});
   },
+  blur: function() {
+	  this.setState({focus:false});
+  },
   render: function() {
 		var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
 		var buttons = React.createElement("span", null, React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
@@ -43,10 +49,16 @@ var Purchase = React.createClass({displayName: "Purchase",
 		{
 			buttons = '';
 		}
+		var display = React.createElement("span", null, " $", this.props.obj.price, " - ", this.props.obj.name, " ");
+		if(this.state.focus)
+		{
+			display = edit_form;
+		}
 
 		return (
-			React.createElement("li", {onFocus: this.focus}, " $", this.props.obj.price, " - ", this.props.obj.name, " ", buttons, 
-			edit_form
+			React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
+			display, 
+		   	buttons
 			)
 		);
   }
