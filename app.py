@@ -134,7 +134,11 @@ class Planned(Resource):
     def get(self):
         #session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought != True).order_by(Purchase.added)
+        # query = select(x for x in Purchase if x.bought != True).order_by(Purchase.added)
+
+        sql = "select * from Purchase where bought = 0 and done is null order by added;"
+        query = Purchase.select_by_sql(sql)
+
         results = [item.to_json() for item in query]
         _LOGGER.debug(results)
         return results
@@ -144,7 +148,9 @@ class Recent(Resource):
     def get(self):
         # session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought == True).order_by(Purchase.done)
+        # query = select(x for x in Purchase if x.bought == True).order_by(Purchase.done)
+        sql = "select * from Purchase where bought = 1 and done is not null;"
+        query = Purchase.select_by_sql(sql)
         results = [item.to_json() for item in query][:10]
         return results
 
@@ -153,7 +159,9 @@ class NoBuy(Resource):
     def get(self):
         #session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
+        # query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
+        sql = "select * from Purchase where bought = 0 and done is not null;"
+        query = Purchase.select_by_sql(sql)
         return [item.to_json() for item in query][:10]
 
 from flask import jsonify
