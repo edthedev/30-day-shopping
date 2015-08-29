@@ -52,28 +52,27 @@ var Purchase = React.createClass({
 	  this.setState({focus:false});
   },
   render: function() {
-		var edit_form = <span><input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /></span>;
-		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
+	var edit_form = <span><input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /></span>;
+	var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
-		var expected = this.expected();
-		if(this.props.obj.bought)
-		{
-			buttons = '';
-			expected = '';
-		}
-		var display = <span> ${this.props.obj.price} - {this.props.obj.name} </span>;
-		if(this.state.focus)
-		{
-			display = edit_form;
-		}
+	var expected = " - " + this.expected();
+	if(this.props.obj.bought)
+	{
+		buttons = '';
+		expected = '';
+	}
+	var display = <span> ${this.props.obj.price} - {this.props.obj.name} </span>;
+	if(this.state.focus)
+	{
+		display = edit_form;
+	}
 
-		return (
-			<li> {this.props.obj.bought} ${this.props.obj.price} - {this.props.obj.name} {buttons}
-			<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
-			{display} - {expected}
-		   	{buttons}
-			</li>
-		);
+	return (
+		<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
+		{this.props.obj.bought} {display} {expected}
+		{buttons}
+		</li>
+	);
   }
 });
 

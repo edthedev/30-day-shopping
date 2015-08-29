@@ -36,7 +36,6 @@ var Purchase = React.createClass({displayName: "Purchase",
   buy: function() {
 	this.update({'bought':true});
   },
-<<<<<<< HEAD
   expected: function()
   {
 	  var result = moment(this.props.obj.added);
@@ -46,9 +45,6 @@ var Purchase = React.createClass({displayName: "Purchase",
 	  console.log("exp", result);
 	  return result.format(DISPLAY_DATE);
   },
-  render: function() {
-		var buttons = React.createElement("span", null, " - ", this.expected(), " ", React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
-=======
   focus: function() {
 	  this.setState({focus:true});
   },
@@ -56,30 +52,27 @@ var Purchase = React.createClass({displayName: "Purchase",
 	  this.setState({focus:false});
   },
   render: function() {
-		var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
-		var buttons = React.createElement("span", null, React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
->>>>>>> develop
+	var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
+	var buttons = React.createElement("span", null, React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
 
-		if(this.props.obj.bought)
-		{
-			buttons = '';
-		}
-		var display = React.createElement("span", null, " $", this.props.obj.price, " - ", this.props.obj.name, " ");
-		if(this.state.focus)
-		{
-			display = edit_form;
-		}
+	var expected = " - " + this.expected();
+	if(this.props.obj.bought)
+	{
+		buttons = '';
+		expected = '';
+	}
+	var display = React.createElement("span", null, " $", this.props.obj.price, " - ", this.props.obj.name, " ");
+	if(this.state.focus)
+	{
+		display = edit_form;
+	}
 
-		return (
-<<<<<<< HEAD
-			React.createElement("li", null, " ", this.props.obj.bought, " $", this.props.obj.price, " - ", this.props.obj.name, " ", buttons
-=======
-			React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
-			display, 
-		   	buttons
->>>>>>> develop
-			)
-		);
+	return (
+		React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
+		this.props.obj.bought, " ", display, " ", expected, 
+		buttons
+		)
+	);
   }
 });
 
