@@ -66,7 +66,8 @@ var Purchase = React.createClass({displayName: "Purchase",
 	var expected = " - " + this.expected();
 	var unbuy_button = "";
 	var display_unbuy = "";
-	if(this.props.obj.done)
+	console.log("done", this.props.obj.done);
+	if(this.props.obj.done != "None")
 	{
 		buttons = '';
 		expected = '';
