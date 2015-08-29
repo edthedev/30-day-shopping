@@ -94,9 +94,6 @@ class Purchase(db.Entity):
 
 db.generate_mapping(create_tables=True) 
 
-    #def expected(self):
-    #    return self.added + datetime.timedelta(days=self.price)
-
     #def save(self):
     #    ''' Add default behavior for expected Purchase date. '''
     #    if not self.expected:
@@ -185,6 +182,15 @@ def athingisdone(thepath):
 # -------------------------------------
 #  Let's just API
 # -------------------------------------
+
+def fix_date(data):
+    if("done" in data):
+        if(data["done"] != ""):
+            data["done"] = dateutil.parser.parse(request.json["done"])
+        else:
+            data["done"] = None
+    return data
+
 import dateutil
 class PurchaseAPI(Resource):
     @db_session
@@ -195,7 +201,7 @@ class PurchaseAPI(Resource):
     @db_session
     def put(self, item_id):
         data = request.json
-        data["done"] = dateutil.parser.parse(request.json["done"])
+        data = fix_date(data)
         Purchase[item_id].set(**data)
         return jsonify(Purchase[item_id].to_dict())
 
@@ -210,7 +216,7 @@ class PurchaseListAPI(Resource):
     @db_session
     def post(self):
         data = request.json
-        data["done"] = dateutil.parser.parse(request.json["done"])
+        data = fix_date(data)
         item = Purchase(**data)
         return jsonify(item.to_dict())
 
