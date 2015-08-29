@@ -39,7 +39,10 @@ import os
 import logging
 # from datetime import timedelta
 
+
+
 # Libraries
+
 # -----------------------------------
 # Constants
 # -----------------------------------
@@ -108,11 +111,56 @@ db.generate_mapping(create_tables=True)
 #                self.expected = self.added + timedelta(days=30)
 #        super(Purchase, self).save()
 
+# ----------------------------------------
+# Twitter Auth
+# ----------------------------------------
+from flask_oauthlib.client import OAuth
+from six.moves.configparser import ConfigParser
+
+CONF_FILE = os.path.join(APP_ROOT, _APP_NAME + '.conf')
+_LOGGER.debug('Using Config file %s', CONF_FILE)
+
+CONFIG = ConfigParser()
+CONFIG.read(CONF_FILE)
+app.secret_key = CONFIG.get('app', 'secret')
+
+oauth = OAuth()
+twitter = oauth.remote_app('twitter',
+    base_url='https://api.twitter.com/1/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://api.twitter.com/oauth/access_token',
+    authorize_url='https://api.twitter.com/oauth/authenticate',
+    consumer_key=CONFIG.get('twitter','key'),
+    consumer_secret=CONFIG.get('twitter', 'secret'),
+)
+
+from flask import send_from_directory, url_for, request, session, redirect
+@app.route('/login')
+def login():
+    return twitter.authorize(
+        callback=url_for(
+            'oauth_authorized', 
+            next=request.args.get('next') or request.referrer or None))
+
+@app.route('/logout')
+def logout():
+    session.pop('twitter_token', None)
+    session.pop('twitter_user', None)
+    return redirect(url_for('index'))
 
 # ----------------------------------------------------
 # API (with flask-restful, rather than flask-restless)
 #   Why change? SQLAlchemy isn't fun. Pony ORM is.
-#   Also - the boring crap is now three lines, instead of 10
+#   flask-restless with SQLAlchemy
+#     - Violates the Zen of Python by having way
+#         more than one way to do things.
+#     - Does things we don't need.
+#     - Is a bit of a diva.
+#   flask-restful with PonyORM
+#     - Is fun.
+#     - Looks and feels like LINQ, 
+#         which we can all benefit from knowing anyway.
+#     - Gets the job done with minimal fuss.
 # ----------------------------------------------------
 
 from flask_restful import Api, Resource
