@@ -53,7 +53,7 @@ var Purchase = React.createClass({
   },
   render: function() {
 	var edit_form = <span><input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /></span>;
-	var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
+	var buttons = <span> <button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
 	var expected = " - " + this.expected();
 	if(this.props.obj.bought)

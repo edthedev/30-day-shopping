@@ -53,7 +53,7 @@ var Purchase = React.createClass({displayName: "Purchase",
   },
   render: function() {
 	var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
-	var buttons = React.createElement("span", null, React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
+	var buttons = React.createElement("span", null, " ", React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
 
 	var expected = " - " + this.expected();
 	if(this.props.obj.bought)
