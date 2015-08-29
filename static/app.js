@@ -56,21 +56,25 @@ var Purchase = React.createClass({displayName: "Purchase",
 	var buttons = React.createElement("span", null, " ", React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
 
 	var expected = " - " + this.expected();
+	var unbuy_button = "";
+	var display_unbuy = "";
 	if(this.props.obj.bought)
 	{
 		buttons = '';
 		expected = '';
+		unbuy_button = React.createElement("button", {className: "btn", onClick: this.unbuy}, "UnBuy");
 	}
 	var display = React.createElement("span", null, " $", this.props.obj.price, " - ", this.props.obj.name, " ");
 	if(this.state.focus)
 	{
 		display = edit_form;
+		display_unbuy = unbuy_button;
 	}
 
 	return (
 		React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
 		this.props.obj.bought, " ", display, " ", expected, 
-		buttons
+		buttons, " ", display_unbuy
 		)
 	);
   }

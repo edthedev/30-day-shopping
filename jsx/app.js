@@ -56,21 +56,25 @@ var Purchase = React.createClass({
 	var buttons = <span> <button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
 	var expected = " - " + this.expected();
+	var unbuy_button = "";
+	var display_unbuy = "";
 	if(this.props.obj.bought)
 	{
 		buttons = '';
 		expected = '';
+		unbuy_button = <button className='btn' onClick={this.unbuy}>UnBuy</button>;
 	}
 	var display = <span> ${this.props.obj.price} - {this.props.obj.name} </span>;
 	if(this.state.focus)
 	{
 		display = edit_form;
+		display_unbuy = unbuy_button;
 	}
 
 	return (
 		<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
 		{this.props.obj.bought} {display} {expected}
-		{buttons}
+		{buttons} {display_unbuy}
 		</li>
 	);
   }
