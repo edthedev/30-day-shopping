@@ -33,16 +33,25 @@ var Purchase = React.createClass({displayName: "Purchase",
   add: function() {
 	this.update({'name':'test1', 'price':5});
   },
+  nobuy: function() {
+	this.update({'bought':false, 'done':true});
+  },
   buy: function() {
-	this.update({'bought':true});
+	// var it = Date().toISOString();
+	var it = moment().format();
+    console.log("time", it);
+	this.update({'bought':true, 'done':it});
+  },
+  unbuy: function() {
+	this.update({'bought':false, 'done':false});
   },
   expected: function()
   {
 	  var result = moment(this.props.obj.added);
 	  // assume $1 per day accrual
-	  console.log("price...", this.props.obj.price);
+	  // console.log("price...", this.props.obj.price);
 	  result.add(this.props.obj.price, "days");
-	  console.log("exp", result);
+	  // console.log("exp", result);
 	  return result.format(DISPLAY_DATE);
   },
   focus: function() {
@@ -53,7 +62,9 @@ var Purchase = React.createClass({displayName: "Purchase",
   },
   render: function() {
 	var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
-	var buttons = React.createElement("span", null, " ", React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
+	var buy_button = React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought");
+	var wont_buy = React.createElement("button", {className: "btn", onClick: this.nobuy}, "Will Not Buy");
+	var buttons = React.createElement("span", {className: "btn-group"}, buy_button, wont_buy);
 
 	var expected = " - " + this.expected();
 	var unbuy_button = "";
@@ -62,7 +73,7 @@ var Purchase = React.createClass({displayName: "Purchase",
 	{
 		buttons = '';
 		expected = '';
-		unbuy_button = React.createElement("button", {className: "btn", onClick: this.unbuy}, "UnBuy");
+		unbuy_button = React.createElement("button", {className: "btn", onClick: this.unbuy}, "Rebuy");
 	}
 	var display = React.createElement("span", null, " $", this.props.obj.price, " - ", this.props.obj.name, " ");
 	if(this.state.focus)

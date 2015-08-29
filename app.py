@@ -177,6 +177,7 @@ def athingisdone(thepath):
 # -------------------------------------
 #  Let's just API
 # -------------------------------------
+import dateutil
 class PurchaseAPI(Resource):
     @db_session
     def get(self):
@@ -186,6 +187,7 @@ class PurchaseAPI(Resource):
     @db_session
     def put(self, item_id):
         data = request.json
+        data["done"] = dateutil.parser.parse(request.json["done"])
         Purchase[item_id].set(**data)
         return jsonify(Purchase[item_id].to_dict())
 
