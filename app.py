@@ -202,9 +202,9 @@ class PurchaseListAPI(Resource):
     @db_session
     def post(self):
         data = request.json
+        data["done"] = dateutil.parser.parse(request.json["done"])
         item = Purchase(**data)
         return jsonify(item.to_dict())
-
 
 api.add_resource(PurchaseListAPI, '/api/purchase')
 api.add_resource(PurchaseAPI, '/api/purchase/<string:item_id>')

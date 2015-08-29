@@ -34,16 +34,13 @@ var Purchase = React.createClass({
 	this.update({'name':'test1', 'price':5});
   },
   nobuy: function() {
-	this.update({'bought':false, 'done':true});
+	this.update({'bought':false, 'done':moment().format()});
   },
   buy: function() {
-	// var it = Date().toISOString();
-	var it = moment().format();
-    console.log("time", it);
-	this.update({'bought':true, 'done':it});
+	this.update({'bought':true, 'done':moment().format()});
   },
   unbuy: function() {
-	this.update({'bought':false, 'done':false});
+	this.update({'bought':false, 'done':""});
   },
   expected: function()
   {
