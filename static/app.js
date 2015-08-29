@@ -3,6 +3,9 @@ var today = moment().startOf('day');
 var balance = 0;
 
 var Purchase = React.createClass({displayName: "Purchase",
+  getInitialState: function() {
+    return {focus: false};
+  }, 
   update: function(updates) {
 	updates["id"] = this.props.obj.id;
 	var ref_method = this.props.ref_method;
@@ -18,12 +21,22 @@ var Purchase = React.createClass({displayName: "Purchase",
 		}.bind(this)
 	});
   },
+  update_from_form: function()
+	{
+		var updates = {
+			"name": $("#name" + this.props.id).val()
+		};
+		console.log("updates", updates);
+		console.log("props", this.props);
+		this.update(updates);
+	},
   add: function() {
 	this.update({'name':'test1', 'price':5});
   },
   buy: function() {
 	this.update({'bought':true});
   },
+<<<<<<< HEAD
   expected: function()
   {
 	  var result = moment(this.props.obj.added);
@@ -35,14 +48,36 @@ var Purchase = React.createClass({displayName: "Purchase",
   },
   render: function() {
 		var buttons = React.createElement("span", null, " - ", this.expected(), " ", React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
+=======
+  focus: function() {
+	  this.setState({focus:true});
+  },
+  blur: function() {
+	  this.setState({focus:false});
+  },
+  render: function() {
+		var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
+		var buttons = React.createElement("span", null, React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought"));
+>>>>>>> develop
 
 		if(this.props.obj.bought)
 		{
 			buttons = '';
 		}
+		var display = React.createElement("span", null, " $", this.props.obj.price, " - ", this.props.obj.name, " ");
+		if(this.state.focus)
+		{
+			display = edit_form;
+		}
 
 		return (
+<<<<<<< HEAD
 			React.createElement("li", null, " ", this.props.obj.bought, " $", this.props.obj.price, " - ", this.props.obj.name, " ", buttons
+=======
+			React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
+			display, 
+		   	buttons
+>>>>>>> develop
 			)
 		);
   }
@@ -110,7 +145,7 @@ var PurchaseList = React.createClass({displayName: "PurchaseList",
 		console.log(this.state);
 		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				return (React.createElement(Purchase, {key: item.id, name: item.name, obj: item, ref_method: ref_method}));
+				return (React.createElement(Purchase, {id: item.id, key: item.id, name: item.name, obj: item, ref_method: ref_method}));
 			});
 		var add_form = "";
 		if(this.props.api_url == "api2/planned")

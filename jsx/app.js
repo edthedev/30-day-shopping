@@ -3,6 +3,9 @@ var today = moment().startOf('day');
 var balance = 0;
 
 var Purchase = React.createClass({
+  getInitialState: function() {
+    return {focus: false};
+  }, 
   update: function(updates) {
 	updates["id"] = this.props.obj.id;
 	var ref_method = this.props.ref_method;
@@ -18,6 +21,15 @@ var Purchase = React.createClass({
 		}.bind(this)
 	});
   },
+  update_from_form: function()
+	{
+		var updates = {
+			"name": $("#name" + this.props.id).val()
+		};
+		console.log("updates", updates);
+		console.log("props", this.props);
+		this.update(updates);
+	},
   add: function() {
 	this.update({'name':'test1', 'price':5});
   },
@@ -33,16 +45,33 @@ var Purchase = React.createClass({
 	  console.log("exp", result);
 	  return result.format(DISPLAY_DATE);
   },
+  focus: function() {
+	  this.setState({focus:true});
+  },
+  blur: function() {
+	  this.setState({focus:false});
+  },
   render: function() {
-		var buttons = <span> - {this.expected()} <button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
+		var edit_form = <span><input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /></span>;
+		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
+		var expected = this.expected();
 		if(this.props.obj.bought)
 		{
 			buttons = '';
+			expected = '';
+		}
+		var display = <span> ${this.props.obj.price} - {this.props.obj.name} </span>;
+		if(this.state.focus)
+		{
+			display = edit_form;
 		}
 
 		return (
 			<li> {this.props.obj.bought} ${this.props.obj.price} - {this.props.obj.name} {buttons}
+			<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
+			{display} - {expected}
+		   	{buttons}
 			</li>
 		);
   }
@@ -110,7 +139,7 @@ var PurchaseList = React.createClass({
 		console.log(this.state);
 		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				return (<Purchase key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
+				return (<Purchase id={item.id} key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
 			});
 		var add_form = "";
 		if(this.props.api_url == "api2/planned")
