@@ -17,13 +17,26 @@ var Purchase = React.createClass({
 		}.bind(this)
 	});
   },
+  update_from_form: function()
+	{
+		var updates = {
+			"name": $("#name" + this.props.id).val()
+		};
+		console.log("updates", updates);
+		console.log("props", this.props);
+		this.update(updates);
+	},
   add: function() {
 	this.update({'name':'test1', 'price':5});
   },
   buy: function() {
 	this.update({'bought':true});
   },
+  focus: function() {
+	  this.setState({focus:true});
+  },
   render: function() {
+		var edit_form = <span><input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /></span>;
 		var buttons = <span><button className='btn btn-done' onClick={this.buy}>Bought</button></span>;
 
 		if(this.props.obj.bought)
@@ -32,7 +45,8 @@ var Purchase = React.createClass({
 		}
 
 		return (
-			<li> ${this.props.obj.price} - {this.props.obj.name} {buttons}
+			<li onFocus={this.focus}> ${this.props.obj.price} - {this.props.obj.name} {buttons}
+			{edit_form}
 			</li>
 		);
   }
@@ -100,7 +114,7 @@ var PurchaseList = React.createClass({
 		console.log(this.state);
 		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				return (<Purchase key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
+				return (<Purchase id={item.id} key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
 			});
 		var add_form = "";
 		if(this.props.api_url == "api2/planned")
