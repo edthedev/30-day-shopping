@@ -24,7 +24,8 @@ var Purchase = React.createClass({
   update_from_form: function()
 	{
 		var updates = {
-			"name": $("#name" + this.props.id).val()
+			"name": $("#name" + this.props.id).val(),
+			"price": $("#price" + this.props.id).val()
 		};
 		console.log("updates", updates);
 		console.log("props", this.props);
@@ -58,7 +59,8 @@ var Purchase = React.createClass({
 	  this.setState({focus:false});
   },
   render: function() {
-	var edit_form = <span><input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /></span>;
+	var edit_form = <span> <input id={"price" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.price} />
+		<input id={"name" + this.props.id} onChange={this.update_from_form} defaultValue={this.props.obj.name} /> </span>;
 	var buy_button = <button className='btn btn-done' onClick={this.buy}>Bought</button>;
 	var wont_buy = <button className='btn' onClick={this.nobuy}>Will Not Buy</button>;
 	var buttons = <span className="btn-group">{buy_button}{wont_buy}</span>;
