@@ -83,8 +83,8 @@ var Purchase = React.createClass({displayName: "Purchase",
 	}
 
 	return (
-		React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
-		React.createElement("p", null, 
+			React.createElement("li", null, 
+		React.createElement("p", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
 		this.props.obj.bought, " ", display, " ", expected
 		), 
 		React.createElement("p", null, "Recommended amount to apply: $", this.props.progress.toFixed(2)), 

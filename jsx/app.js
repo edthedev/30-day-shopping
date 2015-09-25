@@ -83,8 +83,8 @@ var Purchase = React.createClass({
 	}
 
 	return (
-		<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
-		<p>
+			<li>
+		<p onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
 		{this.props.obj.bought} {display} {expected} 
 		</p>
 		<p>Recommended amount to apply: ${this.props.progress.toFixed(2)}</p>
