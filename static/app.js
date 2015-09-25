@@ -145,6 +145,13 @@ var PurchaseList = React.createClass({displayName: "PurchaseList",
 	this.ref_me();
   },
 	render: function(){
+
+		var totalCost = 0;
+		for(item of this.state.data)
+		{
+			totalCost+=item.price;
+		}
+
 		console.log('called render!');
 		console.log('state:');
 		console.log(this.state);
@@ -158,9 +165,12 @@ var PurchaseList = React.createClass({displayName: "PurchaseList",
 			add_form = (React.createElement("div", null, React.createElement("h2", null, "Plan Another Purchase"), " ", React.createElement(PurchaseForm, {onPurchaseSubmit: this.add})));
 		}
 		return (
+			React.createElement("div", null, 
+			React.createElement("p", null, "Total Cost: $", totalCost), 
 			React.createElement("ul", null, 
 			rows, 
 			add_form
+			)
 			)
 		);
 	}

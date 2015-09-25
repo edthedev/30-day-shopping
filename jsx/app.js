@@ -145,6 +145,13 @@ var PurchaseList = React.createClass({
 	this.ref_me();
   },
 	render: function(){
+
+		var totalCost = 0;
+		for(item of this.state.data)
+		{
+			totalCost+=item.price;
+		}
+
 		console.log('called render!');
 		console.log('state:');
 		console.log(this.state);
@@ -158,10 +165,13 @@ var PurchaseList = React.createClass({
 			add_form = (<div><h2>Plan Another Purchase</h2> <PurchaseForm onPurchaseSubmit={this.add}/></div>);
 		}
 		return (
+			<div>
+			<p>Total Cost: ${totalCost}</p>
 			<ul>
 			{rows}
 			{add_form}
 			</ul>
+			</div>
 		);
 	}
 });
