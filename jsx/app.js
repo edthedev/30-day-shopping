@@ -84,7 +84,10 @@ var Purchase = React.createClass({
 
 	return (
 		<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
-		{this.props.obj.bought} {display} {expected}
+		<p>
+		{this.props.obj.bought} {display} {expected} 
+		</p>
+		<p>Recommended amount to apply: ${this.props.progress.toFixed(2)}</p>
 		{buttons} {display_unbuy}
 		</li>
 	);
@@ -115,10 +118,14 @@ var PurchaseForm = React.createClass({
 });
 
 
+function daysBetween(one, another) {
+	  return Math.round(Math.abs(one - another)/8.64e7);
+}
+
 // TODO: Wrap everything up in a Big component that refreshes all child lists each time there is a change.
 var PurchaseList = React.createClass({
   getInitialState: function() {
-    return {data: []};
+    return {data: [], cashOnHand: 30};
   }, 
   ref_me: function() {
 	console.log('called refreshed!');
@@ -147,24 +154,54 @@ var PurchaseList = React.createClass({
 	console.log('called compdidmount!');
 	this.ref_me();
   },
+  updateCashOnHand: function() {
+	  var cash = $("#cashOnHand").val();
+	  this.setState({cashOnHand: cash});
+  },
 	render: function(){
+
+		var totalCost = 0;
+		var totalDays = 0;
+		for(item of this.state.data)
+		{
+			totalCost+=item.price;
+			// var diff = daysBetween(Date(), Date(item.added));
+			var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+			var firstDate = new Date();
+			var secondDate = new Date(item.added);
+			var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+			console.log("diffDays", diffDays);
+			totalDays+=diffDays;
+		}
+
 		console.log('called render!');
 		console.log('state:');
 		console.log(this.state);
 		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				return (<Purchase id={item.id} key={item.id} name={item.name} obj={item} ref_method={ref_method}/>);
-			});
+				var firstDate = new Date();
+				var secondDate = new Date(item.added);
+				var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+				var pct = diffDays / totalDays;
+				var progress = pct * this.state.cashOnHand;
+				return (<Purchase id={item.id} key={item.id} name={item.name} obj={item} ref_method={ref_method} progress={progress} />);
+			}.bind(this));
 		var add_form = "";
 		if(this.props.api_url == "api2/planned")
 		{
 			add_form = (<div><h2>Plan Another Purchase</h2> <PurchaseForm onPurchaseSubmit={this.add}/></div>);
 		}
 		return (
+			<div>
+			<p>Total Days: {totalDays}</p>
+			<p>Total Cost: ${totalCost}</p>
+			<p>Cash on Hand: ${this.state.cashOnHand}</p>
+			<p>Cash on Hand: <input id="cashOnHand" onChange={this.updateCashOnHand} /></p>
 			<ul>
 			{rows}
 			{add_form}
 			</ul>
+			</div>
 		);
 	}
 });
