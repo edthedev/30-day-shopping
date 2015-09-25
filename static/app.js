@@ -24,7 +24,8 @@ var Purchase = React.createClass({displayName: "Purchase",
   update_from_form: function()
 	{
 		var updates = {
-			"name": $("#name" + this.props.id).val()
+			"name": $("#name" + this.props.id).val(),
+			"price": $("#price" + this.props.id).val()
 		};
 		console.log("updates", updates);
 		console.log("props", this.props);
@@ -58,7 +59,8 @@ var Purchase = React.createClass({displayName: "Purchase",
 	  this.setState({focus:false});
   },
   render: function() {
-	var edit_form = React.createElement("span", null, React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}));
+	var edit_form = React.createElement("span", null, " ", React.createElement("input", {id: "price" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.price}), 
+		React.createElement("input", {id: "name" + this.props.id, onChange: this.update_from_form, defaultValue: this.props.obj.name}), " ");
 	var buy_button = React.createElement("button", {className: "btn btn-done", onClick: this.buy}, "Bought");
 	var wont_buy = React.createElement("button", {className: "btn", onClick: this.nobuy}, "Will Not Buy");
 	var buttons = React.createElement("span", {className: "btn-group"}, buy_button, wont_buy);
@@ -66,7 +68,8 @@ var Purchase = React.createClass({displayName: "Purchase",
 	var expected = " - " + this.expected();
 	var unbuy_button = "";
 	var display_unbuy = "";
-	if(this.props.obj.done)
+	console.log("done", this.props.obj.done);
+	if(this.props.obj.done != "None")
 	{
 		buttons = '';
 		expected = '';
@@ -80,8 +83,8 @@ var Purchase = React.createClass({displayName: "Purchase",
 	}
 
 	return (
-		React.createElement("li", null, 
-		React.createElement("p", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
+		React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
+		React.createElement("p", null, 
 		this.props.obj.bought, " ", display, " ", expected
 		), 
 		React.createElement("p", null, "Recommended amount to apply: $", this.props.progress.toFixed(2)), 
