@@ -81,7 +81,10 @@ var Purchase = React.createClass({displayName: "Purchase",
 
 	return (
 		React.createElement("li", {onFocus: this.focus, onBlur: this.blur, onClick: this.focus}, 
-		this.props.obj.bought, " ", display, " ", expected, " ", this.props.progress, 
+		React.createElement("p", null, 
+		this.props.obj.bought, " ", display, " ", expected
+		), 
+		React.createElement("p", null, "Recommended amount to apply: $", this.props.progress.toFixed(2)), 
 		buttons, " ", display_unbuy
 		)
 	);
@@ -173,7 +176,11 @@ var PurchaseList = React.createClass({displayName: "PurchaseList",
 		console.log(this.state);
 		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				var progress = (item.price / totalCost) * this.state.cashOnHand;
+				var firstDate = new Date();
+				var secondDate = new Date(item.added);
+				var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+				var pct = diffDays / totalDays;
+				var progress = pct * this.state.cashOnHand;
 				return (React.createElement(Purchase, {id: item.id, key: item.id, name: item.name, obj: item, ref_method: ref_method, progress: progress}));
 			}.bind(this));
 		var add_form = "";

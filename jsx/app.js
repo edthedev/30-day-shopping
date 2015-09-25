@@ -81,7 +81,10 @@ var Purchase = React.createClass({
 
 	return (
 		<li onFocus={this.focus} onBlur={this.blur} onClick={this.focus}>
-		{this.props.obj.bought} {display} {expected} {this.props.progress}
+		<p>
+		{this.props.obj.bought} {display} {expected} 
+		</p>
+		<p>Recommended amount to apply: ${this.props.progress.toFixed(2)}</p>
 		{buttons} {display_unbuy}
 		</li>
 	);
@@ -173,7 +176,11 @@ var PurchaseList = React.createClass({
 		console.log(this.state);
 		var ref_method = this.ref_me;
 		var rows = this.state.data.map(function (item) {
-				var progress = (item.price / totalCost) * this.state.cashOnHand;
+				var firstDate = new Date();
+				var secondDate = new Date(item.added);
+				var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+				var pct = diffDays / totalDays;
+				var progress = pct * this.state.cashOnHand;
 				return (<Purchase id={item.id} key={item.id} name={item.name} obj={item} ref_method={ref_method} progress={progress} />);
 			}.bind(this));
 		var add_form = "";
