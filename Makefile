@@ -12,7 +12,7 @@ static:
 	jsx -w jsx/ static/
 
 bower_reqs:
-	bower install
+	bower install --upgrade
 
 venv:
 	virtualenv $(VENV)

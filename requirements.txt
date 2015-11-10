@@ -1,4 +1,7 @@
-flask_restful
-pony
+SQLAlchemy
+flask-restless
+Flask-SQLAlchemy
 Flask-OAuthlib
 oauthlib
+pony
+flask-restful
