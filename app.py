@@ -97,9 +97,6 @@ class Purchase(db.Entity):
 
 db.generate_mapping(create_tables=True) 
 
-    #def expected(self):
-    #    return self.added + datetime.timedelta(days=self.price)
-
     #def save(self):
     #    ''' Add default behavior for expected Purchase date. '''
     #    if not self.expected:
@@ -182,7 +179,11 @@ class Planned(Resource):
     def get(self):
         #session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought != True).order_by(Purchase.added)
+        # query = select(x for x in Purchase if x.bought != True).order_by(Purchase.added)
+
+        sql = "select * from Purchase where bought = 0 and done is null order by added;"
+        query = Purchase.select_by_sql(sql)
+
         results = [item.to_json() for item in query]
         _LOGGER.debug(results)
         return results
@@ -192,7 +193,9 @@ class Recent(Resource):
     def get(self):
         # session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought == True).order_by(Purchase.done)
+        # query = select(x for x in Purchase if x.bought == True).order_by(Purchase.done)
+        sql = "select * from Purchase where bought = 1 and done is not null;"
+        query = Purchase.select_by_sql(sql)
         results = [item.to_json() for item in query][:10]
         return results
 
@@ -201,7 +204,9 @@ class NoBuy(Resource):
     def get(self):
         #session = Session()
         #user = session['twitter_user']
-        query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
+        # query = select(x for x in Purchase if x.bought == False and x.done is not None ).order_by(Purchase.done)
+        sql = "select * from Purchase where bought = 0 and done is not null;"
+        query = Purchase.select_by_sql(sql)
         return [item.to_json() for item in query][:10]
 
 from flask import jsonify
@@ -225,6 +230,16 @@ def athingisdone(thepath):
 # -------------------------------------
 #  Let's just API
 # -------------------------------------
+
+def fix_date(data):
+    if("done" in data):
+        if(data["done"] != ""):
+            data["done"] = dateutil.parser.parse(request.json["done"])
+        else:
+            data["done"] = None
+    return data
+
+import dateutil
 class PurchaseAPI(Resource):
     @db_session
     def get(self):
@@ -234,6 +249,7 @@ class PurchaseAPI(Resource):
     @db_session
     def put(self, item_id):
         data = request.json
+        data = fix_date(data)
         Purchase[item_id].set(**data)
         return jsonify(Purchase[item_id].to_dict())
 
@@ -248,9 +264,9 @@ class PurchaseListAPI(Resource):
     @db_session
     def post(self):
         data = request.json
+        data = fix_date(data)
         item = Purchase(**data)
         return jsonify(item.to_dict())
-
 
 api.add_resource(PurchaseListAPI, '/api/purchase')
 api.add_resource(PurchaseAPI, '/api/purchase/<string:item_id>')

@@ -72,4 +72,9 @@ backup_database:
 upload_database:
 	ansible $(HOSTNAME) -m copy -a "backup=True src=./$(APP).db dest=/var/www/$(APP)/$(APP).db"
 
+########################################
+# Deploy Tasks
+########################################
 
+upload:
+	cd ~/projects/server-configs/www; make update APP=shopping
