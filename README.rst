@@ -1,4 +1,4 @@
-
+This project has been archived.
 Getting started::
 
     >virtualenv ve 
